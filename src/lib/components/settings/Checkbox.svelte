@@ -8,7 +8,6 @@
     let {disabled = false, checked = $bindable(false), onchange}: Props = $props();
 
     function change() {
-        checked = !checked;
         if (onchange) onchange(checked);
     }
 </script>

@@ -9,6 +9,13 @@
     import {basicOptions, richOptions} from "./dropdown";
     import Checkbox from "$lib/components/settings/Checkbox.svelte";
     import Switch from "$lib/components/settings/Switch.svelte";
+    import Color from "$lib/components/settings/Color.svelte";
+    import type {HexColor} from "$lib/utils/colors";
+    import LinkItem from "$lib/components/settings/LinkItem.svelte";
+    import CogIconUrl from "$lib/images/tabs/application.webp";
+    import Number from "$lib/components/settings/Number.svelte";
+    import Range from "$lib/components/settings/Range.svelte";
+    import Palette from "$lib/components/settings/Palette.svelte";
 
     if (!dev) error(404, "Not found");
 
@@ -17,13 +24,27 @@
         dropdownRich: string;
         booleanCheckbox: boolean;
         booleanSwitch: boolean;
+        colorBasic: HexColor;
+        colorPalette: HexColor[];
+        numberBasic: number;
+        numberWithUndefined: number | undefined;
+        numberFractional: number;
+        rangeBasic: number;
+        rangeLabeled: number;
     }
 
     const values = $state<Values>({
         dropdownBasic: "detect",
         dropdownRich: "nord",
         booleanCheckbox: true,
-        booleanSwitch: false
+        booleanSwitch: false,
+        colorBasic: "#4f5a6f",
+        colorPalette: ["#4f5a6f", "#f6f7fb", "#c0d0e0", "#a0b0c0", "#708090"],
+        numberBasic: 42,
+        numberWithUndefined: undefined,
+        numberFractional: 1.4,
+        rangeBasic: 42,
+        rangeLabeled: 0.4
     });
 </script>
 
@@ -39,6 +60,18 @@
         </Item>
     </Group>
 
+
+    <Group title="Colors">
+        <Item name="Basic Color" note="This is a color input.">
+            <Color bind:value={values.colorBasic} />
+        </Item>
+        <Separator />
+        <Item name="Color Palette" note="This is a color palette input.">
+            <Palette bind:value={values.colorPalette} defaultValue={["#4f5a6f", "#f6f7fb", "#c0d0e0", "#a0b0c0", "#708090"]} />
+        </Item>
+    </Group>
+
+
     <Group title="Dropdowns">
          <Item name="Basic" note="Default behavior with string options.">
             <Dropdown bind:value={values.dropdownBasic} options={basicOptions} />
@@ -48,11 +81,37 @@
             <Dropdown bind:value={values.dropdownRich} groups={richOptions} searchable allowEmpty placeholder="Select grouped option" />
         </Item>
     </Group>
+    <Group>
+        <LinkItem name="Advanced Dropdown Debug" href="/app/dropdown-debug" icon={CogIconUrl} />
+    </Group>
+
+
+    <Group title="Numbers">
+        <Item name="Basic number" note="This is a number input.">
+            <Number bind:value={values.numberBasic} min={0} max={100} step={1} />
+        </Item>
+        <Separator />
+        <Item name="Number with undefined" note="Supports undefined value for 'no value' state.">
+            <Number bind:value={values.numberWithUndefined} min={0} max={100} step={1} placeholder="No value" />
+        </Item>
+        <Separator />
+        <Item name="Fractional number" note="Supports fractional values when step is non-integer.">
+            <Number bind:value={values.numberFractional} min={0} max={10} step={0.1} integer={false} />
+        </Item>
+        <Separator />
+        <Item name="Range input" note="This is a range input.">
+            <Range bind:value={values.rangeBasic} min={0} max={100} step={1} showLabels={false} />
+        </Item>
+        <Separator />
+        <Item name="Range with labels" note="Shows min/max labels when showLabels is true.">
+            <Range bind:value={values.rangeLabeled} min={0} max={1} step={0.1} showLabels />
+         </Item>
+    </Group>
 
     <Group title="Live Values" borderless>
         <div class="preview">
             {#each Object.entries(values) as [k, v] (k)}
-                <div><span>{k}</span><code>{v || "<empty>"}</code></div>
+                <div><span>{k}</span><code>{v ?? "<empty>"}</code></div>
                 <Separator />
             {/each}
         </div>
