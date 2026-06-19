@@ -20,6 +20,7 @@
     import RepeatableText from "$lib/components/settings/RepeatableText.svelte";
     import InlineRepeatableText from "$lib/components/settings/InlineRepeatableText.svelte";
     import PillButtons from "$lib/components/settings/PillButtons.svelte";
+    import FeatureList from "$lib/components/settings/FeatureList.svelte";
 
     if (!dev) error(404, "Not found");
 
@@ -40,6 +41,7 @@
         textRepeatableAdvanced: string[];
         textInlineRepeatable: string[];
         pillButtons: string;
+        featureList: string;
     }
 
     const values = $state<Values>({
@@ -59,6 +61,7 @@
         textRepeatableAdvanced: ["Value A", "Value B"],
         textInlineRepeatable: ["Inline 1", "Inline 2", "Inline 3", "Inline 4"],
         pillButtons: "default",
+        featureList: "feature-a,no-feature-b",
     });
 </script>
 
@@ -151,6 +154,70 @@
                 ]}
             />
         </Item>
+    </Group>
+
+    <Group title="Example Group">
+        <Item name="Switch" note="This is a switch.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+        <Separator />
+        <Item name="Feature List" note="This is a feature list input." inline={false}>
+            <FeatureList
+                bind:value={values.featureList}
+                features={[
+                    {id: "feature-a", label: "Feature A"},
+                    {id: "feature-b", label: "Feature B"},
+                    {id: "feature-c", label: "Feature C"},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="Basic text" note="This is a text input.">
+            <Text bind:value={values.textBasic} placeholder="Enter text here" />
+        </Item>
+    </Group>
+
+    <Group title="Feature List" borderless note="This is a feature list input.">
+        <FeatureList
+            bind:value={values.featureList}
+            features={[
+                {id: "feature-a", label: "Feature A"},
+                {id: "feature-b", label: "Feature B"},
+                {id: "feature-c", label: "Feature C"},
+            ]}
+        />
+    </Group>
+
+    <Group title="Rest of them">
+        <Item name="Switch" note="This is a switch.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+        <Separator />
+        <Item name="Basic text" note="This is a text input.">
+            <Text bind:value={values.textBasic} placeholder="Enter text here" />
+        </Item>
+    </Group>
+
+
+    <Group title="Rest of them">
+        <Item name="Switch" note="This is a switch.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+        <Separator />
+        <Item name="Basic text" note="This is a text input.">
+            <Text bind:value={values.textBasic} placeholder="Enter text here" />
+        </Item>
+    </Group>
+
+    <Group borderless>
+        <FeatureList
+            bind:value={values.featureList}
+            features={[
+                {id: "feature-a", label: "Feature A"},
+                {id: "feature-b", label: "Feature B"},
+                {id: "feature-c", label: "Feature C"},
+            ]}
+        />
     </Group>
 
     <Group title="Live Values" borderless>
