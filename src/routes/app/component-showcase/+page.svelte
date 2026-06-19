@@ -18,6 +18,7 @@
     import Palette from "$lib/components/settings/Palette.svelte";
     import Text from "$lib/components/settings/Text.svelte";
     import RepeatableText from "$lib/components/settings/RepeatableText.svelte";
+    import InlineRepeatableText from "$lib/components/settings/InlineRepeatableText.svelte";
 
     if (!dev) error(404, "Not found");
 
@@ -36,6 +37,7 @@
         textBasic: string;
         textRepeatable: string[];
         textRepeatableAdvanced: string[];
+        textInlineRepeatable: string[];
     }
 
     const values = $state<Values>({
@@ -52,7 +54,8 @@
         rangeLabeled: 0.4,
         textBasic: "Hello, world!",
         textRepeatable: ["Item 1", "Item 2", "Item 3"],
-        textRepeatableAdvanced: ["Value A", "Value B"]
+        textRepeatableAdvanced: ["Value A", "Value B"],
+        textInlineRepeatable: ["Inline 1", "Inline 2", "Inline 3", "Inline 4"]
     });
 </script>
 
@@ -127,6 +130,10 @@
         <Separator />
         <Item name="Repeatable Text Advanced" note="This is an advanced repeatable text input.">
             <RepeatableText bind:value={values.textRepeatableAdvanced} placeholder="Enter value" emptyLabel="No values set" maxPreview={3} canReorder={false} />
+        </Item>
+        <Separator />
+        <Item name="Inline Repeatable Text" note="This is an inline repeatable text input.">
+            <InlineRepeatableText bind:value={values.textInlineRepeatable} placeholder="Enter value" />
         </Item>
     </Group>
 
