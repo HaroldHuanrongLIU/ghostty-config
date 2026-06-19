@@ -16,6 +16,7 @@
     import Number from "$lib/components/settings/Number.svelte";
     import Range from "$lib/components/settings/Range.svelte";
     import Palette from "$lib/components/settings/Palette.svelte";
+    import Text from "$lib/components/settings/Text.svelte";
 
     if (!dev) error(404, "Not found");
 
@@ -31,6 +32,7 @@
         numberFractional: number;
         rangeBasic: number;
         rangeLabeled: number;
+        textBasic: string;
     }
 
     const values = $state<Values>({
@@ -44,7 +46,8 @@
         numberWithUndefined: undefined,
         numberFractional: 1.4,
         rangeBasic: 42,
-        rangeLabeled: 0.4
+        rangeLabeled: 0.4,
+        textBasic: "Hello, world!",
     });
 </script>
 
@@ -106,6 +109,12 @@
         <Item name="Range with labels" note="Shows min/max labels when showLabels is true.">
             <Range bind:value={values.rangeLabeled} min={0} max={1} step={0.1} showLabels />
          </Item>
+    </Group>
+
+    <Group title="Text">
+        <Item name="Basic text" note="This is a text input.">
+            <Text bind:value={values.textBasic} placeholder="Enter text here" />
+        </Item>
     </Group>
 
     <Group title="Live Values" borderless>
