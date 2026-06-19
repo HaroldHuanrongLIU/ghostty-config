@@ -1,4 +1,5 @@
 <script lang="ts">
+    /* eslint-disable quote-props */
     import {dev} from "$app/environment";
     import {error} from "@sveltejs/kit";
     import Group from "$lib/components/settings/Group.svelte";
@@ -22,6 +23,7 @@
     import PillButtons from "$lib/components/settings/PillButtons.svelte";
     import FeatureList from "$lib/components/settings/FeatureList.svelte";
     import Radio from "$lib/components/settings/Radio.svelte";
+    import FeatureListSimple from "$lib/components/settings/FeatureListSimple.svelte";
 
     if (!dev) error(404, "Not found");
 
@@ -44,6 +46,8 @@
         pillButtons: string;
         featureList: string;
         radioBasic: string;
+        featuresPills: string;
+        featuresSwitches: string;
     }
 
     const values = $state<Values>({
@@ -65,6 +69,8 @@
         pillButtons: "default",
         featureList: "feature-a,no-feature-b",
         radioBasic: "option1",
+        featuresPills: "cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,path",
+        featuresSwitches: "",
     });
 </script>
 
@@ -159,13 +165,14 @@
         </Item>
     </Group>
 
-    <Group title="Example Group">
+    <!-- <Group title="Example Group">
         <Item name="Switch" note="This is a switch.">
             <Switch bind:checked={values.booleanSwitch} />
         </Item>
         <Separator />
         <Item name="Feature List" note="This is a feature list input." inline={false}>
             <FeatureList
+                borderless
                 bind:value={values.featureList}
                 features={[
                     {id: "feature-a", label: "Feature A"},
@@ -221,7 +228,7 @@
                 {id: "feature-c", label: "Feature C"},
             ]}
         />
-    </Group>
+    </Group> -->
 
     <Group title="Radio Buttons">
         <Item name="Radio" note="This is a radio input.">
@@ -234,6 +241,224 @@
                 ]}
             />
         </Item>
+    </Group>
+
+    <!-- <Group title="Shell Settings Example">
+        <Item name="Shell integration style">
+            <Dropdown
+                bind:value={values.dropdownBasic}
+                options={[
+                    {value: "detect", name: "Auto-detect (recommended)"},
+                    {value: "none", name: "None (disable shell integration)"},
+                    {value: "legacy", name: "Legacy (use old method, less reliable)"},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="Shell integration features" inline={false}>
+            <FeatureList
+                borderless
+                bind:value={values.tempFeatures}
+                features={[
+                    {id: "cursor", label: "Cursor reporting"},
+                    {id: "title", label: "Title reporting"},
+                    {id: "sudo", label: "Sudo detection"},
+                    {id: "ssh-env", label: "SSH environment detection"},
+                    {id: "ssh-terminfo", label: "SSH terminfo injection"},
+                    {id: "path", label: "Current path reporting"},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="TERM environment variable">
+            <Text bind:value={values.textBasic} placeholder="xterm-ghostty" />
+        </Item>
+        <Separator />
+        <Item name="CSI 21 title reporting" note="This allows running apps to read the terminal title.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+    </Group>
+
+    <Group title="Shell Settings Example">
+        <Item name="Shell integration style">
+            <Dropdown
+                bind:value={values.dropdownBasic}
+                options={[
+                    {value: "detect", name: "Auto-detect (recommended)"},
+                    {value: "none", name: "None (disable shell integration)"},
+                    {value: "legacy", name: "Legacy (use old method, less reliable)"},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="TERM environment variable">
+            <Text bind:value={values.textBasic} placeholder="xterm-ghostty" />
+        </Item>
+        <Separator />
+        <Item name="CSI 21 title reporting" note="This allows running apps to read the terminal title.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+    </Group>
+
+    <Group>
+        <FeatureList
+                borderless
+                bind:value={values.tempFeatures}
+                features={[
+                    {id: "cursor", label: "Cursor reporting"},
+                    {id: "title", label: "Title reporting"},
+                    {id: "sudo", label: "Sudo detection"},
+                    {id: "ssh-env", label: "SSH environment detection"},
+                    {id: "ssh-terminfo", label: "SSH terminfo injection"},
+                    {id: "path", label: "Current path reporting"},
+                ]}
+            />
+    </Group>
+
+    <Group title="Shell Settings Example">
+        <Item name="Shell integration style">
+            <Dropdown
+                bind:value={values.dropdownBasic}
+                options={[
+                    {value: "detect", name: "Auto-detect (recommended)"},
+                    {value: "none", name: "None (disable shell integration)"},
+                    {value: "legacy", name: "Legacy (use old method, less reliable)"},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="TERM environment variable">
+            <Text bind:value={values.textBasic} placeholder="xterm-ghostty" />
+        </Item>
+        <Separator />
+        <Item name="CSI 21 title reporting" note="This allows running apps to read the terminal title.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+    </Group> -->
+
+    <Group title="Shell Integration Features">
+        <FeatureList
+                borderless
+                bind:value={values.featuresSwitches}
+                features={[
+                    {id: "cursor", label: "Cursor reporting"},
+                    {id: "title", label: "Title reporting"},
+                    {id: "sudo", label: "Sudo detection"},
+                    {id: "ssh-env", label: "SSH environment detection"},
+                    {id: "ssh-terminfo", label: "SSH terminfo injection"},
+                    {id: "path", label: "Current path reporting"},
+                ]}
+            />
+    </Group>
+
+    <!-- ========================================================== -->
+
+    <!-- <Group title="Shell Settings Example">
+        <Item name="Shell integration style">
+            <Dropdown
+                bind:value={values.dropdownBasic}
+                options={[
+                    {value: "detect", name: "Auto-detect (recommended)"},
+                    {value: "none", name: "None (disable shell integration)"},
+                    {value: "legacy", name: "Legacy (use old method, less reliable)"},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="Shell integration features" inline={false}>
+            <FeatureListSimple
+                borderless
+                bind:value={values.tempFeaturesSimple}
+                features={[
+                    {id: "cursor", label: "Cursor reporting", default: true},
+                    {id: "sudo", label: "Sudo detection", default: false},
+                    {id: "title", label: "Title reporting", default: true},
+                    {id: "ssh-env", label: "SSH environment detection", default: false},
+                    {id: "ssh-terminfo", label: "SSH terminfo injection", default: false},
+                    {id: "path", label: "Current path reporting", default: true},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="TERM environment variable">
+            <Text bind:value={values.textBasic} placeholder="xterm-ghostty" />
+        </Item>
+        <Separator />
+        <Item name="CSI 21 title reporting" note="This allows running apps to read the terminal title.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+    </Group>
+
+    <Group title="Shell Settings Example">
+        <Item name="Shell integration style">
+            <Dropdown
+                bind:value={values.dropdownBasic}
+                options={[
+                    {value: "detect", name: "Auto-detect (recommended)"},
+                    {value: "none", name: "None (disable shell integration)"},
+                    {value: "legacy", name: "Legacy (use old method, less reliable)"},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="TERM environment variable">
+            <Text bind:value={values.textBasic} placeholder="xterm-ghostty" />
+        </Item>
+        <Separator />
+        <Item name="CSI 21 title reporting" note="This allows running apps to read the terminal title.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+    </Group>
+
+    <Group>
+        <FeatureListSimple
+                borderless
+                bind:value={values.tempFeaturesSimple}
+                features={[
+                    {id: "cursor", label: "Cursor reporting", default: true},
+                    {id: "sudo", label: "Sudo detection", default: false},
+                    {id: "title", label: "Title reporting", default: true},
+                    {id: "ssh-env", label: "SSH environment detection", default: false},
+                    {id: "ssh-terminfo", label: "SSH terminfo injection", default: false},
+                    {id: "path", label: "Current path reporting", default: true},
+                ]}
+            />
+    </Group>
+
+    <Group title="Shell Settings Example">
+        <Item name="Shell integration style">
+            <Dropdown
+                bind:value={values.dropdownBasic}
+                options={[
+                    {value: "detect", name: "Auto-detect (recommended)"},
+                    {value: "none", name: "None (disable shell integration)"},
+                    {value: "legacy", name: "Legacy (use old method, less reliable)"},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="TERM environment variable">
+            <Text bind:value={values.textBasic} placeholder="xterm-ghostty" />
+        </Item>
+        <Separator />
+        <Item name="CSI 21 title reporting" note="This allows running apps to read the terminal title.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
+    </Group> -->
+
+    <Group title="Shell Integration Features">
+        <FeatureListSimple
+                borderless
+                bind:value={values.featuresSwitches}
+                features={[
+                    {id: "cursor", label: "Cursor reporting", default: true},
+                    {id: "sudo", label: "Sudo detection", default: false},
+                    {id: "title", label: "Title reporting", default: true},
+                    {id: "ssh-env", label: "SSH environment detection", default: false},
+                    {id: "ssh-terminfo", label: "SSH terminfo injection", default: false},
+                    {id: "path", label: "Current path reporting", default: true},
+                ]}
+            />
     </Group>
 
     <Group title="Live Values" borderless>
