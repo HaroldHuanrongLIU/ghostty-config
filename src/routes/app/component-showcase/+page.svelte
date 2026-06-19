@@ -21,6 +21,7 @@
     import InlineRepeatableText from "$lib/components/settings/InlineRepeatableText.svelte";
     import PillButtons from "$lib/components/settings/PillButtons.svelte";
     import FeatureList from "$lib/components/settings/FeatureList.svelte";
+    import Radio from "$lib/components/settings/Radio.svelte";
 
     if (!dev) error(404, "Not found");
 
@@ -42,6 +43,7 @@
         textInlineRepeatable: string[];
         pillButtons: string;
         featureList: string;
+        radioBasic: string;
     }
 
     const values = $state<Values>({
@@ -62,6 +64,7 @@
         textInlineRepeatable: ["Inline 1", "Inline 2", "Inline 3", "Inline 4"],
         pillButtons: "default",
         featureList: "feature-a,no-feature-b",
+        radioBasic: "option1",
     });
 </script>
 
@@ -218,6 +221,19 @@
                 {id: "feature-c", label: "Feature C"},
             ]}
         />
+    </Group>
+
+    <Group title="Radio Buttons">
+        <Item name="Radio" note="This is a radio input.">
+            <Radio
+                bind:value={values.radioBasic}
+                options={[
+                    {value: "option1", label: "Option 1"},
+                    {value: "option2", label: "Option 2"},
+                    {value: "option3", label: "Option 3"},
+                ]}
+            />
+        </Item>
     </Group>
 
     <Group title="Live Values" borderless>
