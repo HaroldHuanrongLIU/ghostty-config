@@ -129,7 +129,7 @@
 
 
     <Group title="Dropdowns">
-         <Item name="Basic" note="Default behavior with string options.">
+        <Item name="Basic" note="Default behavior with string options.">
             <Dropdown bind:value={values.dropdownBasic} options={basicOptions} />
         </Item>
         <Separator />
@@ -513,6 +513,52 @@
                     {id: "path", label: "Current path reporting", default: true},
                 ]}
             />
+    </Group>
+
+    <Group title="Shell Integration Features">
+        <Item inline={false}>
+            <FeatureListSimple
+                borderless
+                bind:value={values.featuresSwitches}
+                features={[
+                    {id: "cursor", label: "Cursor reporting", default: true},
+                    {id: "sudo", label: "Sudo detection", default: false},
+                    {id: "title", label: "Title reporting", default: true},
+                    {id: "ssh-env", label: "SSH environment detection", default: false},
+                    {id: "ssh-terminfo", label: "SSH terminfo injection", default: false},
+                    {id: "path", label: "Current path reporting", default: true},
+                ]}
+            />
+        </Item>
+    </Group>
+
+    <Group title="Shell Integration Features">
+        <Item name="Basic" note="Default behavior with string options.">
+            <Dropdown bind:value={values.dropdownBasic} options={basicOptions} />
+        </Item>
+        <Separator />
+        <Item name="enmifneoewmv" note="This allows running apps to read the terminal title." inline={false}>
+            <FeatureListSimple
+                borderless
+                bind:value={values.featuresSwitches}
+                features={[
+                    {id: "cursor", label: "Cursor reporting", default: true},
+                    {id: "sudo", label: "Sudo detection", default: false},
+                    {id: "title", label: "Title reporting", default: true},
+                    {id: "ssh-env", label: "SSH environment detection", default: false},
+                    {id: "ssh-terminfo", label: "SSH terminfo injection", default: false},
+                    {id: "path", label: "Current path reporting", default: true},
+                ]}
+            />
+        </Item>
+        <Separator />
+        <Item name="Basic text" note="This is a text input.">
+            <Text bind:value={values.textBasic} placeholder="Enter text here" />
+        </Item>
+        <Separator />
+        <Item name="Switch" note="This is a switch.">
+            <Switch bind:checked={values.booleanSwitch} />
+        </Item>
     </Group>
 
     <Group title="Live Values" borderless>

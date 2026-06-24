@@ -1,5 +1,6 @@
 <script lang="ts">
     import {createTooltipAttachment} from "$lib/attachments/tooltip";
+    import Separator from "./Separator.svelte";
     import Switch from "./Switch.svelte";
 
 
@@ -16,11 +17,10 @@
     interface Props {
         value: string; // raw config string, e.g. 'cursor,no-sudo,title'
         features: Feature[];
-        borderless?: boolean;
     }
 
     // eslint-disable-next-line prefer-const
-    let {value = $bindable(), features, borderless = false}: Props = $props();
+    let {value = $bindable(), features}: Props = $props();
 
     function parse(raw: string): Record<string, boolean> {
         const result: Record<string, boolean> = {};
@@ -54,8 +54,9 @@
 </script>
 
 <!-- TODO: should this use Group and Separator components? -->
-<div class="feature-list" class:borderless>
-    {#each features as feature (feature.id)}
+<div class="feature-list">
+    {#each features as feature, i (feature.id)}
+        <!-- <Separator /> -->
         <div class="feature-row">
             <div class="feature-label">
                 {feature.label}
@@ -80,7 +81,7 @@
                 onchange={(v: boolean) => setState(feature.id, v)}
             />
         </div>
-        <!-- {#if i < features.length - 1}<Separator />{/if} -->
+        {#if i < features.length - 1}<Separator />{/if}
     {/each}
 </div>
 
@@ -89,35 +90,26 @@
 .feature-list {
     display: flex;
     flex-direction: column;
-    background: var(--bg-level-2);
+    /* background: var(--bg-level-2);
     border-radius: var(--radius-level-3);
     border: 1px solid var(--border-level-2);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05) inset; */
     overflow: hidden;
     flex: 1;
 }
 
-.feature-list.borderless {
+/* .feature-list.borderless {
     background: transparent;
     border: none;
     box-shadow: none;
-}
+} */
 
 .feature-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 10px;
+    padding: 6px 0;
     gap: 12px;
-}
-
-.feature-list.borderless .feature-row {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-.feature-row + .feature-row {
-    border-top: 1px solid var(--bg-separator, rgba(255,255,255,0.07));
 }
 
 .feature-label {
