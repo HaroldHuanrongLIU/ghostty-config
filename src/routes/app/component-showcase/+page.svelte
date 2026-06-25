@@ -559,12 +559,12 @@
         </Item>
     </Group>
 
-    <Group title="Shell Integration Features">
+    <Group title="Shell Integration" note="This is a group of shell related setting tests.">
         <Item name="Basic" note="Default behavior with string options.">
             <Dropdown bind:value={values.dropdownBasic} options={basicOptions} />
         </Item>
         <Separator />
-        <Item name="Button Test" note="Current value: {values.featuresSwitches}">
+        <Item name="Shell Integration Features" note="Explanation of what this variable means and does. {values.featuresSwitches}">
             <FeatureListButton
                 bind:value={values.featuresSwitches}
                 features={[

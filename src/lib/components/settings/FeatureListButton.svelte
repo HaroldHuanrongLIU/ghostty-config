@@ -1,4 +1,5 @@
 <script lang="ts">
+    import {getSetting} from "$lib/contexts";
     import Button from "../Button.svelte";
     import CheckListIcon from "../icons/CheckListIcon.svelte";
     import DialogModal from "../modals/DialogModal.svelte";
@@ -21,6 +22,7 @@
 
     // eslint-disable-next-line prefer-const
     let {value = $bindable(), features}: Props = $props();
+    const settingInfo = getSetting();
 
     let states = $derived.by(() => parse(value));
 
@@ -77,7 +79,7 @@
 
 
 {#if isEditorOpen}
-    <DialogModal title="Feature List Editor" onclose={closeEditor}>
+    <DialogModal title={settingInfo.name} onclose={closeEditor}>
         {#snippet icon()}
             <CheckListIcon />
         {/snippet}

@@ -2,7 +2,7 @@ import type {HexColor} from "$lib/utils/colors";
 
 export type GhosttyPlatform = "macos" | "linux" | "gtk" | "gtk-wayland" | "gtk-x11";
 
-interface SettingInfo {
+export interface SettingInfo {
     key: string; // the actual ghostty config key, e.g. "window-padding-x"
     name: string; // display label
     note?: string; // short curated HTML hint

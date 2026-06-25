@@ -5,6 +5,7 @@
     import {alert} from "$lib/stores/modals.svelte";
     import Badge from "../Badge.svelte";
     import {searchState} from "$lib/stores/search.svelte";
+    import {setSetting} from "$lib/contexts";
 
     interface Props {
         name?: string;
@@ -78,6 +79,18 @@
             shouldHighlight = false;
         };
     });
+
+    // Give the setting context so that child components can access the setting info if needed
+    (() => {
+        setSetting({
+            key: settingId || "",
+            name,
+            note,
+            platform,
+            since,
+            description: description || "",
+        });
+    })();
 </script>
 
 <div
