@@ -60,7 +60,7 @@
     }
 </script>
 
-<div class="custom-color">
+<div class="custom-number">
     {#if shouldUseDropdown}
         <Dropdown
             value={mode}
@@ -69,7 +69,9 @@
         />
     {/if}
 
-    <Number bind:value={() => customNumber, onNumberChange} {min} {max} {step} {size} {placeholder} {integer} />
+    <div class="custom-wrapper" class:dimmed={mode !== "custom"}>
+        <Number bind:value={() => customNumber, onNumberChange} {min} {max} {step} {size} {placeholder} {integer} />
+    </div>
 
     {#if !shouldUseDropdown}
         <PillButtonGroup
@@ -81,9 +83,20 @@
 </div>
 
 <style>
-.custom-color {
+.custom-number {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+}
+
+.custom-wrapper {
+    display: inline-flex;
+    align-items: center;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.dimmed {
+    opacity: 0.5;
+    filter: brightness(0.8);
 }
 </style>

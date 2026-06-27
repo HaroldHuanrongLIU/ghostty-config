@@ -3,6 +3,7 @@
     import {luminosity, isDark, type HexColor} from "$lib/utils/colors";
     import ColorPicker from "$lib/components/ColorPicker.svelte";
     import {success} from "$lib/stores/toasts.svelte";
+    import {toAppWindow} from "$lib/attachments/portal";
 
     interface Props {
         value: HexColor;
@@ -50,8 +51,8 @@
 </div>
 
 {#if popoutOpen}
-<div class="shadow" onclick={click} transition:fade={{duration: 200}} role="none"></div>
-<div class="picker-container" transition:fly={{y: 32, duration: 200}}>
+<div class="shadow" onclick={click} transition:fade={{duration: 200}} role="none" {@attach toAppWindow}></div>
+<div class="picker-container" transition:fly={{y: 32, duration: 200}} {@attach toAppWindow}>
     <ColorPicker bind:value />
     <button class="close" onclick={click} type="button" title="Close"><span>×</span></button>
 </div>
@@ -63,8 +64,8 @@
     position: relative;
 } */
 .shadow {
-    background: rgba(0, 0, 0, 0.3);
-    position: fixed;
+    background: rgba(18, 18, 18, 0.75);
+    position: absolute;
     top: 0;
     bottom: 0;
     right: 0;
@@ -73,7 +74,7 @@
 }
 
 .picker-container {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

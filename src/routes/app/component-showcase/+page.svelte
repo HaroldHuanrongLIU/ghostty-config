@@ -38,6 +38,7 @@
         colorBasic: HexColor;
         colorPalette: HexColor[];
         colorCustom: string;
+        colorCustomAdvanced: string;
         numberBasic: number;
         numberWithUndefined: number | undefined;
         numberFractional: number;
@@ -65,6 +66,7 @@
         colorBasic: "#4f5a6f",
         colorPalette: ["#4f5a6f", "#f6f7fb", "#c0d0e0", "#a0b0c0", "#708090"],
         colorCustom: "transparent",
+        colorCustomAdvanced: "#68A6C5",
         numberBasic: 42,
         numberWithUndefined: undefined,
         numberFractional: 1.4,
@@ -115,6 +117,18 @@
                     {value: "currentColor", label: "Current color"},
                 ]}
                 default="#122A5F"
+            />
+        </Item>
+        <Separator />
+        <Item name="Custom Color Advanced" note="Supports both custom hex colors and predefined special values. Currently: {values.colorCustomAdvanced}">
+            <CustomColor
+                bind:value={values.colorCustomAdvanced}
+                presets={[
+                    {value: "cell-bg", label: "Cell Background", description: "The background color of the terminal cell"},
+                    {value: "cell-fg", label: "Cell Foreground", description: "The foreground color of the terminal cell"},
+                    {value: "bright", label: "Bright", description: "A bright color for emphasis"},
+                ]}
+                default="#68A6C5"
             />
         </Item>
     </Group>
