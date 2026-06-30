@@ -47,6 +47,7 @@
         emptyLabel?: string;
         noResultsLabel?: string;
         disabled?: boolean;
+        iconSize?: number;
         change?: (v: string) => void;
     };
 
@@ -61,6 +62,7 @@
         emptyLabel = "Clear selection",
         noResultsLabel = "No results",
         disabled = false,
+        iconSize = 16,
         change
     }: Props = $props();
     /* eslint-enable prefer-const */
@@ -459,7 +461,7 @@
                                 <div class="option-main" class:has-icon={Boolean(option.icon)}>
                                     <div class="option-title-row">
                                         {#if option.icon}
-                                            <span class="option-icon" aria-hidden="true">
+                                            <span class="option-icon" aria-hidden="true" style:height="{iconSize}px" style:width="{iconSize}px">
                                             {#if option.icon.startsWith("http") || option.icon.startsWith("/") || option.icon.startsWith("data:") || option.icon.includes(".")}
                                                 <img src={option.icon} alt={option.name} loading="lazy" />
                                             {:else}
@@ -667,7 +669,8 @@
     }
 
     .option-icon {
-        width: 16px;
+        width: 16px; /* sensible default, overridden by inline style */
+        height: 16px; /* sensible default, overridden by inline style */
         text-align: center;
         flex-shrink: 0;
     }

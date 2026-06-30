@@ -1520,7 +1520,7 @@ export const registry = {
         key: "theme",
         name: "Color theme",
         note: "Any colors selected after setting this will overwrite the theme's colors.",
-        options: [] as string[],
+        options: [] as DropdownOption[],
         type: "theme"
     },
     title: {
