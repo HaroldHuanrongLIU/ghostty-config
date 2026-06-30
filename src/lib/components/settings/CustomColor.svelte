@@ -18,11 +18,9 @@
     bind:value
     {presets}
     {widget}
-    parse={(v: string) => v as HexColor}
-    fallback={defaultValue ?? "#ffffff"}
-    serialize={(v: HexColor) => v}
+    customDefault={defaultValue ?? "#ffffff"}
 >
-    {#snippet control(customColor: HexColor, onColorChange)}
-        <Color bind:value={() => customColor, onColorChange} {defaultValue} />
+    {#snippet control(customColor: string, onColorChange)}
+        <Color bind:value={() => (customColor || "#ffffff") as HexColor, onColorChange} {defaultValue} />
     {/snippet}
 </CustomInput>

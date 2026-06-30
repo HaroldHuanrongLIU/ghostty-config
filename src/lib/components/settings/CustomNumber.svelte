@@ -22,11 +22,13 @@
     bind:value
     {presets}
     {widget}
-    parse={(v: string) => integer ? parseInt(v, 10) : parseFloat(v)}
-    fallback={0}
-    serialize={(v: number) => v.toString()}
+    customDefault="0"
 >
-    {#snippet control(customNumber: number, onNumberChange)}
-        <Number bind:value={() => customNumber, onNumberChange} {min} {max} {step} {size} {placeholder} {integer} />
+    {#snippet control(customNumber: string, setCustom: (next: string) => void)}
+        <Number
+            value={customNumber === "" ? undefined : (integer ? parseInt(customNumber, 10) : parseFloat(customNumber))}
+            onchange={(n: number | undefined) => setCustom(n === undefined ? "" : n.toString())}
+            {min} {max} {step} {size} {placeholder} {integer}
+        />
     {/snippet}
 </CustomInput>

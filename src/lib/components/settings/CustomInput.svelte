@@ -6,30 +6,28 @@
     }
 </script>
 
-<script lang="ts" generics="T">
+<script lang="ts">
     import type {Snippet} from "svelte";
     import Dropdown from "./Dropdown.svelte";
     import PillButtonGroup, {type PillOption} from "./PillButtons.svelte";
 
     interface Props {
-        value: string; // serialized custom value, a preset value, or '' (unset)
+        value: string; // the inner control's string value, a preset value, or '' (unset)
         presets: Preset[]; // which special values this setting supports
         widget?: "dropdown" | "pills"; // default: pills if 2 or fewer presets, dropdown if more than 2
-        parse: (value: string) => T; // turn a non-preset string value into a custom value
-        fallback: T; // custom value to start from when the current value is a preset
-        serialize: (value: T) => string; // turn a custom value back into the string value
-        control: Snippet<[T, (next: T) => void]>; // renders the inner custom control
+        customDefault?: string; // string to seed the custom control with when value is currently a preset
+        control: Snippet<[string, (next: string) => void]>; // renders the inner custom control
     }
 
     // eslint-disable-next-line prefer-const
-    let {value = $bindable(""), presets, widget, parse, fallback, serialize, control}: Props = $props();
+    let {value = $bindable(""), presets, widget, customDefault = "", control}: Props = $props();
 
     const isPreset = (v: string): boolean => presets.some(s => s.value === v);
 
     let mode = $derived(isPreset(value) ? value : "custom");
 
     // Use an iife because svelte linting
-    let customValue = $state<T>((() => isPreset(value) ? fallback : parse(value))());
+    let customValue = $state<string>((() => isPreset(value) ? customDefault : value)());
 
     const shouldUseDropdown = $derived.by(() => {
         if (widget === "dropdown") return true;
@@ -49,15 +47,15 @@
 
 
     function onModeChange(next: string) {
-        if (next === "custom") value = serialize(customValue);
+        if (next === "custom") value = customValue;
         else value = next;
     }
 
     // Track changes coming from the inner custom control
-    function onCustomChange(next: T) {
+    function onCustomChange(next: string) {
         customValue = next;
         if (mode !== "custom") mode = "custom"; // switch to custom mode if not already there
-        value = serialize(customValue);
+        value = customValue;
     }
 </script>
 

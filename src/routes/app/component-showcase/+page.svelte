@@ -27,6 +27,7 @@
     import DualNumber from "$lib/components/settings/DualNumber.svelte";
     import Duration from "$lib/components/settings/Duration.svelte";
     import CustomNumber from "$lib/components/settings/CustomNumber.svelte";
+    import CustomDuration from "$lib/components/settings/CustomDuration.svelte";
     import ScrollMultiplier from "$lib/components/settings/ScrollMultiplier.svelte";
 
     if (!dev) error(404, "Not found");
@@ -55,6 +56,7 @@
         textRepeatable: string[];
         textDuration: string;
         textDurationNullable: string;
+        durationCustom: string;
         pillButtons: string;
         featureList: string;
         radioBasic: string;
@@ -84,6 +86,7 @@
         textRepeatable: ["Item 1", "Item 2", "Item 3"],
         textDuration: "1h30m",
         textDurationNullable: "",
+        durationCustom: "off",
         pillButtons: "default",
         featureList: "",
         radioBasic: "option1",
@@ -231,6 +234,17 @@
         <Separator />
         <Item name="Nullable Duration Text ({values.textDurationNullable})" note="This is a duration text input that parses human-friendly duration formats (e.g. '1h 30m', '45s', '500ms').">
             <Duration bind:value={values.textDurationNullable} nullable placeholder="No value" />
+        </Item>
+        <Separator />
+        <Item name="Custom Duration" note="A Duration with preset special values. Currently: {values.durationCustom}">
+            <CustomDuration
+                bind:value={values.durationCustom}
+                presets={[
+                    {value: "off", label: "Off", description: "Disable the timeout entirely"},
+                    {value: "instant", label: "Instant", description: "No delay"},
+                ]}
+                placeholder="e.g. 750ms"
+            />
         </Item>
     </Group>
 
