@@ -1,17 +1,10 @@
 <script lang="ts">
-    import Dropdown from "./Dropdown.svelte";
+    import CustomInput, {type Preset} from "./CustomInput.svelte";
     import Number from "./Number.svelte";
-    import PillButtonGroup, {type PillOption} from "./PillButtons.svelte";
-
-    export interface Option {
-        value: string; // e.g. "off", "on", "glass"
-        label: string; // e.g. "Off", "On", "Glass"
-        description?: string; // optional description for the option
-    }
 
     interface Props {
         value: string; // number, special string, or '' (unset)
-        presets: Option[]; // which special values this setting supports
+        presets: Preset[]; // which special values this setting supports
         min?: number;
         max?: number;
         step?: number;
@@ -22,81 +15,18 @@
     }
 
     // eslint-disable-next-line prefer-const
-    let {value = $bindable(""), presets: specials, min, max, step, size, placeholder, integer, widget}: Props = $props();
-
-    const isOption = (v: string): boolean => specials.some(s => s.value === v);
-
-    let mode = $derived(isOption(value) ? value : "custom");
-
-    // Use an iife because svelte linting
-    let customNumber = $state<number>((() => isOption(value) ? 0 : parseFloat(value))());
-
-    const shouldUseDropdown = $derived.by(() => {
-        if (widget === "dropdown") return true;
-        if (widget === "pills") return false;
-        return specials.length > 2;
-    });
-    const pillOptions = $derived<PillOption[]>([
-        {label: "Custom", value: "custom", variant: "neutral"},
-        ...specials.map(s => ({label: s.label, value: s.value, variant: "accent" as const})),
-    ]);
-
-    const dropdownOptions = $derived([
-        {name: "Custom", value: "custom"},
-        ...specials.map(s => ({name: s.label, value: s.value, description: s.description})),
-    ]);
-
-
-    function onModeChange(next: string) {
-        if (next === "custom") value = customNumber.toString();
-        else value = next;
-    }
-
-    // Track number changes from the number spinner
-    function onNumberChange(num: number) {
-        customNumber = num;
-        if (mode !== "custom") mode = "custom"; // switch to custom mode if not already there
-        value = customNumber.toString();
-    }
+    let {value = $bindable(""), presets, min, max, step, size, placeholder, integer, widget}: Props = $props();
 </script>
 
-<div class="custom-number">
-    {#if shouldUseDropdown}
-        <Dropdown
-            value={mode}
-            options={dropdownOptions}
-            change={onModeChange}
-        />
-    {/if}
-
-    <div class="custom-wrapper" class:dimmed={mode !== "custom"}>
+<CustomInput
+    bind:value
+    {presets}
+    {widget}
+    parse={(v: string) => integer ? parseInt(v, 10) : parseFloat(v)}
+    fallback={0}
+    serialize={(v: number) => v.toString()}
+>
+    {#snippet control(customNumber: number, onNumberChange)}
         <Number bind:value={() => customNumber, onNumberChange} {min} {max} {step} {size} {placeholder} {integer} />
-    </div>
-
-    {#if !shouldUseDropdown}
-        <PillButtonGroup
-            value={mode}
-            options={pillOptions}
-            onchange={onModeChange}
-        />
-    {/if}
-</div>
-
-<style>
-.custom-number {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.custom-wrapper {
-    display: inline-flex;
-    align-items: center;
-    transition: opacity 0.2s ease, filter 0.2s ease;
-}
-
-.dimmed {
-    opacity: 0.5;
-    filter: brightness(0.8);
-}
-</style>
+    {/snippet}
+</CustomInput>
