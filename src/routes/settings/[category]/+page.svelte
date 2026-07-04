@@ -25,6 +25,15 @@
     import {resolve} from "$app/paths";
     import {success} from "$lib/stores/toasts.svelte";
     import Range from "$lib/components/settings/Range.svelte";
+    import RepeatableText from "$lib/components/settings/RepeatableText.svelte";
+    import FeatureList from "$lib/components/settings/FeatureList.svelte";
+    import PillButtons from "$lib/components/settings/PillButtons.svelte";
+    import Duration from "$lib/components/settings/Duration.svelte";
+    import DualNumber from "$lib/components/settings/DualNumber.svelte";
+    import CustomColor from "$lib/components/settings/CustomColor.svelte";
+    import CustomNumber from "$lib/components/settings/CustomNumber.svelte";
+    import ScrollMultiplier from "$lib/components/settings/ScrollMultiplier.svelte";
+    import NumberWithUnits from "$lib/components/settings/NumberWithUnits.svelte";
     import {type SettingsRegistry} from "$lib/settings/types";
 
 
@@ -88,6 +97,24 @@
                             <Color defaultValue={setting.default as HexColor} bind:value={config[settingId] as HexColor} />
                         {:else if setting.type === "palette"}
                             <Palette defaultValue={setting.default} bind:value={config[settingId] as HexColor[]} />
+                        {:else if setting.type === "repeatable-text"}
+                            <RepeatableText bind:value={config[settingId] as string[]} placeholder={setting.placeholder} canReorder={setting.canReorder} />
+                        {:else if setting.type === "feature-list"}
+                            <FeatureList bind:value={config[settingId] as string} features={setting.features} />
+                        {:else if setting.type === "pill"}
+                            <PillButtons bind:value={config[settingId] as string} options={setting.options} />
+                        {:else if setting.type === "duration"}
+                            <Duration bind:value={config[settingId] as string} nullable={setting.allowEmpty} placeholder={setting.placeholder} />
+                        {:else if setting.type === "dual-number"}
+                            <DualNumber bind:value={config[settingId] as string} labels={setting.labels} min={setting.min} max={setting.max} step={setting.step} />
+                        {:else if setting.type === "custom-color"}
+                            <CustomColor bind:value={config[settingId] as string} presets={setting.presets} widget={setting.widget} />
+                        {:else if setting.type === "custom-number"}
+                            <CustomNumber bind:value={config[settingId] as string} presets={setting.presets} min={setting.min} max={setting.max} step={setting.step} size={setting.size} placeholder={setting.placeholder} integer={setting.integer} widget={setting.widget} />
+                        {:else if setting.type === "scroll-multiplier"}
+                            <ScrollMultiplier bind:value={config[settingId] as string} />
+                        {:else if setting.type === "number-units"}
+                            <NumberWithUnits bind:value={config[settingId] as string} />
                         {/if}
                     </Item>
                 {/each}

@@ -67,7 +67,7 @@
 
         term = new Terminal({
             fontSize: config.fontSize || 13,
-            fontFamily: config.fontFamily || "JetBrainsMono NF, monospace",
+            fontFamily: config.fontFamily.filter(Boolean).join(", ") || "JetBrainsMono NF, monospace",
             theme: getTheme(),
             convertEol: true,
             scrollback: 100,
