@@ -18,42 +18,42 @@ export const registry = {
         description: "Thickness in pixels or percentage adjustment of box drawing characters.",
         key: "adjust-box-thickness",
         name: "Box thickness adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustCellHeight: {
         default: "",
         description: "Adjust the cell height determined by the font. The font will be centered vertically in the cell. Values can be integers or percentages.",
         key: "adjust-cell-height",
         name: "Cell height adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustCellWidth: {
         default: "",
         description: "Adjust the cell width determined by the font. Values can be integers (1, -1) or a percentage (20%, -15%). Represents the amount to change the original value, not the absolute value.",
         key: "adjust-cell-width",
         name: "Cell width adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustCursorHeight: {
         default: "",
         description: "Height in pixels or percentage adjustment of the cursor. Currently applies to all cursor types: bar, rect, and outlined rect.",
         key: "adjust-cursor-height",
         name: "Cursor height adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustCursorThickness: {
         default: "",
         description: "Thickness in pixels or percentage adjustment of the bar cursor and outlined rect cursor.",
         key: "adjust-cursor-thickness",
         name: "Cursor thickness adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustFontBaseline: {
         default: "",
         description: "Distance in pixels or percentage adjustment from the bottom of the cell to the text baseline. Increase to move baseline UP, decrease to move baseline DOWN.",
         key: "adjust-font-baseline",
         name: "Font baseline adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustIconHeight: {
         default: "",
@@ -61,49 +61,49 @@ export const registry = {
         key: "adjust-icon-height",
         name: "Nerd font icon height adjustment",
         since: "1.2.0",
-        type: "text"
+        type: "number-units"
     },
     adjustOverlinePosition: {
         default: "",
         description: "Distance in pixels or percentage adjustment from the top of the cell to the top of the overline. Increase to move overline DOWN, decrease to move overline UP.",
         key: "adjust-overline-position",
         name: "Overline position adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustOverlineThickness: {
         default: "",
         description: "Thickness in pixels or percentage adjustment of the overline.",
         key: "adjust-overline-thickness",
         name: "Overline thickness adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustStrikethroughPosition: {
         default: "",
         description: "Distance in pixels or percentage adjustment from the top of the cell to the top of the strikethrough. Increase to move strikethrough DOWN, decrease to move strikethrough UP.",
         key: "adjust-strikethrough-position",
         name: "Strikethrough position adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustStrikethroughThickness: {
         default: "",
         description: "Thickness in pixels or percentage adjustment of the strikethrough.",
         key: "adjust-strikethrough-thickness",
         name: "Strikethrough thickness adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustUnderlinePosition: {
         default: "",
         description: "Distance in pixels or percentage adjustment from the top of the cell to the top of the underline. Increase to move underline DOWN, decrease to move underline UP.",
         key: "adjust-underline-position",
         name: "Underline position adjustment",
-        type: "text"
+        type: "number-units"
     },
     adjustUnderlineThickness: {
         default: "",
         description: "Thickness in pixels of the underline.",
         key: "adjust-underline-thickness",
         name: "Underline thickness adjustment",
-        type: "text"
+        type: "number-units"
     },
     alphaBlending: {
         default: "native",
@@ -117,12 +117,13 @@ export const registry = {
     appNotifications: {
         default: "",
         description: "Control the in-app notifications that Ghostty shows (toasts on GTK).\n\nNotifications:\n- `clipboard-copy` - Show when text is copied to clipboard (default: on)\n- `config-reload` - Show when configuration is reloaded (default: on)\n\nPrefix with `no-` to disable. Use `true`/`false` to enable/disable all. GTK only.",
+        features: [{id: "clipboard-copy", label: "Clipboard copy", default: true}, {id: "config-reload", label: "Config reload", default: true}],
         key: "app-notifications",
         name: "App notifications",
         note: "Comma-separated list of notifications to enable/disable. Available: clipboard-copy, config-reload. Prefix with <code>no-</code> to disable. <code>true</code>/<code>false</code> to enable/disable all.",
         platform: ["gtk"],
         since: "1.1.0",
-        type: "text"
+        type: "feature-list"
     },
     asyncBackend: {
         default: "auto",
@@ -171,10 +172,13 @@ export const registry = {
     backgroundBlur: {
         default: "false",
         description: "Whether to blur the background when `background-opacity` is less than 1.\n\nValues:\n- A nonnegative integer specifying the blur intensity\n- `false` (equivalent to intensity 0)\n- `true` (equivalent to default intensity of 20)\n- `macos-glass-regular` - Standard glass effect (macOS 26.0+)\n- `macos-glass-clear` - Highly transparent glass effect (macOS 26.0+)\n\nSupported on macOS and some Linux DEs (KDE Plasma). On KDE Plasma, the exact blur intensity is ignored — any truthy value enables blur.",
+        integer: true,
         key: "background-blur",
+        min: 0,
         name: "Background blur",
         note: "Set to <code>true</code> to enable blur, <code>false</code> to disable, a number for a specific radius (macOS), or <code>macos-glass-regular</code>/<code>macos-glass-clear</code> for macOS glass effects.",
-        type: "text"
+        presets: [{value: "false", label: "Off"}, {value: "true", label: "On"}, {value: "macos-glass-regular", label: "Regular Glass"}, {value: "macos-glass-clear", label: "Clear Glass"}],
+        type: "custom-number"
     },
     backgroundImage: {
         default: "",
@@ -267,11 +271,12 @@ export const registry = {
     bellFeatures: {
         default: "",
         description: "Bell features to enable. Comma-separated list. Prefix with `no-` to disable.\n\nFeatures:\n- `system` - Use built-in system functions (plays system alert sound on macOS)\n- `audio` - Play a custom sound (GTK only)\n- `attention` - Request user's attention when unfocused (default: on)\n- `title` - Prepend a bell emoji (🔔) to the title until re-focused (default: on)\n- `border` - Display a border around the alerted surface until re-focused (since 1.2.0 on GTK, 1.2.1 on macOS)",
+        features: [{id: "system", label: "System", default: false}, {id: "audio", label: "Audio", default: false}, {id: "attention", label: "Attention", default: true}, {id: "title", label: "Title", default: true}, {id: "border", label: "Border", default: false}],
         key: "bell-features",
         name: "Bell features",
         note: "Comma-separated list of features. Available: system, audio, attention, title, border. Prefix with <code>no-</code> to disable.",
         since: "1.2.0",
-        type: "text"
+        type: "feature-list"
     },
     boldColor: {
         default: "",
@@ -279,8 +284,9 @@ export const registry = {
         key: "bold-color",
         name: "Bold text color",
         note: "Set to <code>bright</code> to use bright palette colors for bold text, or a hex color value. Leave empty to use the default.",
+        presets: [{value: "bright", label: "Bright"}],
         since: "1.2.0",
-        type: "text"
+        type: "custom-color"
     },
     class: {
         default: "",
@@ -353,28 +359,27 @@ export const registry = {
         type: "switch"
     },
     configFile: {
-        default: "",
+        default: [],
         description: "Additional configuration files to read. Can be repeated. Paths are relative to the config file containing the directive. Prepend `?` to suppress errors if the file doesn't exist. Cycles are not allowed. Config files are loaded after the config they're defined within.",
         key: "config-file",
         name: "Additional config file",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     confirmCloseSurface: {
         default: "true",
         description: "Confirms that a surface should be closed before closing it.\n\n- `true` - Confirm if shell integration detects a running process (default)\n- `false` - Close without confirmation\n- `always` - Always confirm, even if shell integration says no process is running",
         key: "confirm-close-surface",
         name: "Confirm when closing a surface",
-        options: ["true", "false", "always"],
-        type: "dropdown"
+        options: [{value: "true", label: "On"}, {value: "false", label: "Off"}, {value: "always", label: "Always"}],
+        type: "pill"
     },
     copyOnSelect: {
         default: "true",
         description: "Whether to automatically copy selected text to the clipboard.\n\n- `true` - Copy to the selection clipboard (default on Linux and macOS)\n- `false` - Disable copy on select\n- `clipboard` - Copy to both the selection clipboard and system clipboard\n\nMiddle-click paste always uses the selection clipboard.",
         key: "copy-on-select",
         name: "Copy on select",
-        options: ["true", "false", "clipboard"],
-        type: "dropdown"
+        options: [{value: "true", label: "On"}, {value: "false", label: "Off"}, {value: "clipboard", label: "Clipboard"}],
+        type: "pill"
     },
     cursorClickToMove: {
         default: true,
@@ -388,7 +393,8 @@ export const registry = {
         description: "The color of the cursor. If not set, a default will be chosen. Specified as hex or named X11 color. Since 1.2.0, can be set to `cell-foreground` or `cell-background`.",
         key: "cursor-color",
         name: "Cursor color",
-        type: "color"
+        presets: [{value: "cell-foreground", label: "Cell FG"}, {value: "cell-background", label: "Cell BG"}],
+        type: "custom-color"
     },
     cursorOpacity: {
         default: 1,
@@ -414,24 +420,24 @@ export const registry = {
         key: "cursor-style-blink",
         name: "Cursor blink style",
         note: "The <code>default</code> option defers to DEC mode 12 to determine blinking state.",
-        options: ["true", "false", {name: "default", value: ""}],
-        type: "dropdown"
+        options: [{value: "true", label: "On"}, {value: "false", label: "Off"}, {value: "", label: "Default"}],
+        type: "pill"
     },
     cursorText: {
         default: "",
         description: "The color of the text under the cursor. If not set, a default will be chosen. Specified as hex or named X11 color. Since 1.2.0, can be set to `cell-foreground` or `cell-background`.",
         key: "cursor-text",
         name: "Text color under cursor",
-        type: "color"
+        presets: [{value: "cell-foreground", label: "Cell FG"}, {value: "cell-background", label: "Cell BG"}],
+        type: "custom-color"
     },
     customShader: {
-        default: "",
+        default: [],
         description: "Custom shaders to run after the default shaders. Path to a GLSL-syntax shader compatible with the Shadertoy API. Shaders should specify a `mainImage` function.\n\nWARNING: Invalid shaders can cause Ghostty to become unusable (completely black window).\n\nCan be repeated to load multiple shaders run in order.",
         key: "custom-shader",
         name: "Custom shader",
         note: "This matches the API of Shadertoy.",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     customShaderAnimation: {
         default: "true",
@@ -456,13 +462,12 @@ export const registry = {
         type: "text"
     },
     env: {
-        default: "",
+        default: [],
         description: "Extra environment variables to pass to commands launched in a terminal surface. Format: `KEY=VALUE`. Setting a key to an empty string removes it. Setting `env` to an empty string resets the entire map.",
         key: "env",
         name: "Environment variables",
-        repeatable: true,
         since: "1.2.0",
-        type: "text"
+        type: "repeatable-text"
     },
     faintOpacity: {
         default: 0.5,
@@ -483,62 +488,57 @@ export const registry = {
         type: "switch"
     },
     fontCodepointMap: {
-        default: "",
+        default: [],
         description: "Force one or a range of Unicode codepoints to map to a specific named font. Syntax: `codepoint=fontname` where codepoint is either a single codepoint (`U+ABCD`) or a range (`U+ABCD-U+DEFG`). Multiple ranges for the same font can be separated by commas.",
         key: "font-codepoint-map",
         name: "Unicode-specifc font mapping",
         note: "",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontFamily: {
-        default: "",
+        default: [],
         description: "The font families to use. You can generate the list of valid values using the CLI: `ghostty +list-fonts`.\n\nThis configuration can be repeated multiple times to specify preferred fallback fonts when the requested codepoint is not available in the primary font. This is particularly useful for multiple languages, symbolic fonts, etc.\n\nIf you want to overwrite a previous set value rather than append a fallback, specify the value as `\"\"` (empty string) to reset the list.",
         key: "font-family",
         name: "Main font family",
         placeholder: "JetBrainsMono NF",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontFamilyBold: {
-        default: "",
+        default: [],
         description: "The font family to use for bold text. Falls back to `font-family` if not set or not found.",
         key: "font-family-bold",
         name: "Font family for bold text",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontFamilyBoldItalic: {
-        default: "",
+        default: [],
         description: "The font family to use for bold italic text. Falls back to `font-family` if not set or not found.",
         key: "font-family-bold-italic",
         name: "Font family for bold italic text",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontFamilyItalic: {
-        default: "",
+        default: [],
         description: "The font family to use for italic text. Falls back to `font-family` if not set or not found.",
         key: "font-family-italic",
         name: "Font family for italic text",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontFeature: {
-        default: "",
+        default: [],
         description: "Apply a font feature. To enable multiple font features you can repeat this multiple times or use a comma-separated list.\n\nSyntax: `feat`, `+feat`, `-feat`, `feat on`, `feat off`, `feat=1`, `feat=0`.\n\nTo disable programming ligatures, use `-calt`. To generally disable most ligatures, use `-calt, -liga, -dlig`.",
         key: "font-feature",
         name: "Font ligature settings",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontShapingBreak: {
         default: "",
         description: "Locations to break font shaping into multiple runs. A run is a contiguous segment of text that is shaped together. Breaking runs prevents ligatures from forming across certain points.\n\nCombine values with a comma to set multiple options. Prefix an option with `no-` to disable it.\n\nAvailable options:\n- `cursor` - Break runs under the cursor.",
+        features: [{id: "cursor", label: "Cursor", default: false}],
         key: "font-shaping-break",
         name: "How to break runs (cursor, no-cursor).",
         since: "1.2.0",
-        type: "text"
+        type: "feature-list"
     },
     fontSize: {
         default: 13,
@@ -579,12 +579,13 @@ export const registry = {
         type: "text"
     },
     fontSyntheticStyle: {
-        default: "bold,italic,bold-italic",
+        default: "",
         description: "Control whether Ghostty should synthesize a style if the requested style is not available in the specified font-family.\n\nSet to `false` or `true` to disable or enable synthetic styles completely. You can enable or disable specific styles using `bold`, `italic`, and `bold-italic` (to enable) or `no-bold`, `no-italic`, and `no-bold-italic` (to disable). Multiple styles can be combined with commas.\n\nAvailable style keys are: `bold`, `italic`, `bold-italic`.",
+        features: [{id: "bold", label: "Bold", default: true}, {id: "italic", label: "Italic", default: true}, {id: "bold-italic", label: "Bold italic", default: true}],
         key: "font-synthetic-style",
         name: "Synthetic styles",
         note: "See the docs for more info.",
-        type: "text"
+        type: "feature-list"
     },
     fontThicken: {
         default: false,
@@ -607,36 +608,32 @@ export const registry = {
         type: "range"
     },
     fontVariation: {
-        default: "",
+        default: [],
         description: "A repeatable configuration to set one or more font variations values for a variable font. Format: `id=value` where `id` is the axis identifier (always 4 characters, e.g. `wght`). Common axes: `wght` (weight), `slnt` (slant), `ital` (italic), `opsz` (optical size), `wdth` (width).",
         key: "font-variation",
         name: "Main font variant",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontVariationBold: {
-        default: "",
+        default: [],
         description: "Variable font variations for bold text. See `font-variation`.",
         key: "font-variation-bold",
         name: "Font variant for bold text",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontVariationBoldItalic: {
-        default: "",
+        default: [],
         description: "Variable font variations for bold italic text. See `font-variation`.",
         key: "font-variation-bold-italic",
         name: "Font variant for bold italic text",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     fontVariationItalic: {
-        default: "",
+        default: [],
         description: "Variable font variations for italic text. See `font-variation`.",
         key: "font-variation-italic",
         name: "Font variant for italic text",
-        repeatable: true,
-        type: "text"
+        type: "repeatable-text"
     },
     foreground: {
         default: "#ffffff",
@@ -646,12 +643,13 @@ export const registry = {
         type: "color"
     },
     freetypeLoadFlags: {
-        default: "hinting,autohint,light",
+        default: "",
         description: "FreeType load flags to enable. Format: comma-separated flags. Prefix with `no-` to disable. Use `true`/`false` to turn all flags on or off.\n\nAvailable flags:\n- `hinting` - Enable hinting (default: on)\n- `force-autohint` - Always use the freetype auto-hinter (default: off)\n- `monochrome` - Use 1-bit monochrome rendering, disables anti-aliasing (default: off)\n- `autohint` - Enable the freetype auto-hinter (default: on)\n- `light` - Use light hinting style, better preserving glyph shapes (default: on)\n\nOnly applies to Ghostty builds that use FreeType (typically Linux builds).",
+        features: [{id: "hinting", label: "Hinting", default: true}, {id: "force-autohint", label: "Force autohint", default: false}, {id: "monochrome", label: "Monochrome", default: false}, {id: "autohint", label: "Autohint", default: true}, {id: "light", label: "Light hinting", default: true}],
         key: "freetype-load-flags",
         name: "FreeType load flags",
         platform: ["linux"],
-        type: "text"
+        type: "feature-list"
     },
     fullscreen: {
         default: false,
@@ -665,8 +663,8 @@ export const registry = {
         description: "The method to use for calculating the cell width of a grapheme cluster.\n\n- `unicode` - Use the Unicode standard (default, correct but may cause cursor-desync with legacy programs).\n- `legacy` - Use a legacy method such as wcswidth (maximizes compatibility with legacy programs).\n\nIf a running program explicitly enables terminal mode 2027, then `unicode` width will be forced regardless of this configuration.",
         key: "grapheme-width-method",
         name: "Grapheme width calculation method.",
-        options: ["unicode", "legacy"],
-        type: "dropdown"
+        options: [{value: "unicode", label: "Unicode"}, {value: "legacy", label: "Legacy"}],
+        type: "pill"
     },
     gtkCustomCss: {
         default: "",
@@ -798,14 +796,13 @@ export const registry = {
         type: "switch"
     },
     input: {
-        default: "",
+        default: [],
         description: "Data to send as input to the command on startup. Formats:\n- `raw:<string>` - Send raw text (Zig string literal syntax)\n- `path:<path>` - Read a file and send its contents (max 10MB)\n- Bare value is treated as `raw:`\n\nCan be repeated; data is concatenated directly.",
         key: "input",
         name: "Initial input",
         note: "Input for tty launch. Can be raw text, zig string literal, or path:/to/file.",
-        repeatable: true,
         since: "1.2.0",
-        type: "text"
+        type: "repeatable-text"
     },
     keybind: {
         default: [
@@ -1162,22 +1159,19 @@ export const registry = {
         type: "switch"
     },
     mouseScrollMultiplier: {
-        default: 3,
+        default: "3",
         description: "Multiplier for scrolling distance with the mouse wheel. Can be prefixed with `precision:` or `discrete:` to set the multiplier only for specific device types, comma-separated. If no prefix is used, the multiplier applies to all devices.\n\nDefault is 3 for discrete devices and 1 for precision devices. Value will be clamped to [0.01, 10000].",
         key: "mouse-scroll-multiplier",
-        max: 10,
-        min: 0.1,
         name: "Mouse scroll multiplier",
-        step: 0.1,
-        type: "range"
+        type: "scroll-multiplier"
     },
     mouseShiftCapture: {
         default: "false",
         description: "Determines whether running programs can detect the shift key pressed with a mouse click. Typically, shift extends mouse selection.\n\n- `false` - Shift not sent with mouse protocol, will extend selection. Program can override with XTSHIFTESCAPE.\n- `true` - Shift sent with mouse protocol. Program can override with XTSHIFTESCAPE.\n- `never` - Same as false but program cannot override with XTSHIFTESCAPE.\n- `always` - Same as true but program cannot override with XTSHIFTESCAPE.",
         key: "mouse-shift-capture",
         name: "Allow shift with mouse click",
-        options: ["true", "false", "always", "never"],
-        type: "dropdown"
+        options: [{value: "true", label: "On"}, {value: "false", label: "Off"}, {value: "always", label: "Always"}, {value: "never", label: "Never"}],
+        type: "pill"
     },
     notifyOnCommandFinish: {
         default: "never",
@@ -1185,9 +1179,9 @@ export const registry = {
         key: "notify-on-command-finish",
         name: "Notify on command finish",
         note: "Requires shell integration or OSC 133 escape sequences.",
-        options: ["never", "unfocused", "always"],
+        options: [{value: "never", label: "Never"}, {value: "unfocused", label: "Unfocused"}, {value: "always", label: "Always"}],
         since: "1.3.0",
-        type: "dropdown"
+        type: "pill"
     },
     notifyOnCommandFinishAction: {
         default: "bell",
@@ -1199,21 +1193,22 @@ export const registry = {
         type: "text"
     },
     notifyOnCommandFinishAfter: {
+        allowEmpty: false,
         default: "5s",
         description: "How long a command must have been running before a notification will be sent. Default is 5 seconds. Duration format: numbers followed by time units (y, d, h, m, s, ms, us, ns).",
         key: "notify-on-command-finish-after",
         name: "Minimum runtime before notifying",
         note: "How long a command must run before a notification is sent. Format like <code>5s</code>, <code>500ms</code>.",
         since: "1.3.0",
-        type: "text"
+        type: "duration"
     },
     oscColorReportFormat: {
         default: "16-bit",
         description: "The reporting format for OSC sequences that request color information (OSC 4, 10, 11).\n\n- `none` - OSC queries receive no reply\n- `8-bit` - Color components returned unscaled (e.g. `rr/gg/bb`)\n- `16-bit` - Color components returned scaled (e.g. `rrrr/gggg/bbbb`) (default)",
         key: "osc-color-report-format",
         name: "OSC color report format",
-        options: ["none", "8-bit", "16-bit"],
-        type: "dropdown"
+        options: [{value: "none", label: "None"}, {value: "8-bit", label: "8-bit"}, {value: "16-bit", label: "16-bit"}],
+        type: "pill"
     },
     palette: {
         default: ["#1d1f21", "#cc6666", "#b5bd68", "#f0c674", "#81a2be", "#b294bb", "#8abeb7", "#c5c8c6", "#666666", "#d54e53", "#b9ca4a", "#e7c547", "#7aa6da", "#c397d8", "#70c0b1", "#eaeaea", "#000000", "#00005f", "#000087", "#0000af", "#0000d7", "#0000ff", "#005f00", "#005f5f", "#005f87", "#005faf", "#005fd7", "#005fff", "#008700", "#00875f", "#008787", "#0087af", "#0087d7", "#0087ff", "#00af00", "#00af5f", "#00af87", "#00afaf", "#00afd7", "#00afff", "#00d700", "#00d75f", "#00d787", "#00d7af", "#00d7d7", "#00d7ff", "#00ff00", "#00ff5f", "#00ff87", "#00ffaf", "#00ffd7", "#00ffff", "#5f0000", "#5f005f", "#5f0087", "#5f00af", "#5f00d7", "#5f00ff", "#5f5f00", "#5f5f5f", "#5f5f87", "#5f5faf", "#5f5fd7", "#5f5fff", "#5f8700", "#5f875f", "#5f8787", "#5f87af", "#5f87d7", "#5f87ff", "#5faf00", "#5faf5f", "#5faf87", "#5fafaf", "#5fafd7", "#5fafff", "#5fd700", "#5fd75f", "#5fd787", "#5fd7af", "#5fd7d7", "#5fd7ff", "#5fff00", "#5fff5f", "#5fff87", "#5fffaf", "#5fffd7", "#5fffff", "#870000", "#87005f", "#870087", "#8700af", "#8700d7", "#8700ff", "#875f00", "#875f5f", "#875f87", "#875faf", "#875fd7", "#875fff", "#878700", "#87875f", "#878787", "#8787af", "#8787d7", "#8787ff", "#87af00", "#87af5f", "#87af87", "#87afaf", "#87afd7", "#87afff", "#87d700", "#87d75f", "#87d787", "#87d7af", "#87d7d7", "#87d7ff", "#87ff00", "#87ff5f", "#87ff87", "#87ffaf", "#87ffd7", "#87ffff", "#af0000", "#af005f", "#af0087", "#af00af", "#af00d7", "#af00ff", "#af5f00", "#af5f5f", "#af5f87", "#af5faf", "#af5fd7", "#af5fff", "#af8700", "#af875f", "#af8787", "#af87af", "#af87d7", "#af87ff", "#afaf00", "#afaf5f", "#afaf87", "#afafaf", "#afafd7", "#afafff", "#afd700", "#afd75f", "#afd787", "#afd7af", "#afd7d7", "#afd7ff", "#afff00", "#afff5f", "#afff87", "#afffaf", "#afffd7", "#afffff", "#d70000", "#d7005f", "#d70087", "#d700af", "#d700d7", "#d700ff", "#d75f00", "#d75f5f", "#d75f87", "#d75faf", "#d75fd7", "#d75fff", "#d78700", "#d7875f", "#d78787", "#d787af", "#d787d7", "#d787ff", "#d7af00", "#d7af5f", "#d7af87", "#d7afaf", "#d7afd7", "#d7afff", "#d7d700", "#d7d75f", "#d7d787", "#d7d7af", "#d7d7d7", "#d7d7ff", "#d7ff00", "#d7ff5f", "#d7ff87", "#d7ffaf", "#d7ffd7", "#d7ffff", "#ff0000", "#ff005f", "#ff0087", "#ff00af", "#ff00d7", "#ff00ff", "#ff5f00", "#ff5f5f", "#ff5f87", "#ff5faf", "#ff5fd7", "#ff5fff", "#ff8700", "#ff875f", "#ff8787", "#ff87af", "#ff87d7", "#ff87ff", "#ffaf00", "#ffaf5f", "#ffaf87", "#ffafaf", "#ffafd7", "#ffafff", "#ffd700", "#ffd75f", "#ffd787", "#ffd7af", "#ffd7d7", "#ffd7ff", "#ffff00", "#ffff5f", "#ffff87", "#ffffaf", "#ffffd7", "#ffffff", "#080808", "#121212", "#1c1c1c", "#262626", "#303030", "#3a3a3a", "#444444", "#4e4e4e", "#585858", "#626262", "#6c6c6c", "#767676", "#808080", "#8a8a8a", "#949494", "#9e9e9e", "#a8a8a8", "#b2b2b2", "#bcbcbc", "#c6c6c6", "#d0d0d0", "#dadada", "#e4e4e4", "#eeeeee"],
@@ -1276,10 +1271,10 @@ export const registry = {
         key: "quick-terminal-keyboard-interactivity",
         name: "Keyboard interactivity",
         note: "Controls when the quick terminal receives keyboard input. GTK Wayland only.",
-        options: ["none", "on-demand", "exclusive"],
+        options: [{value: "none", label: "None"}, {value: "on-demand", label: "On demand"}, {value: "exclusive", label: "Exclusive"}],
         platform: ["gtk-wayland"],
         since: "1.2.0",
-        type: "dropdown"
+        type: "pill"
     },
     quickTerminalPosition: {
         default: "top",
@@ -1312,9 +1307,9 @@ export const registry = {
         description: "Behavior of the quick terminal when switching between macOS spaces.\n\n- `move` - Quick terminal moves to the current space (default)\n- `remain` - Quick terminal stays in its original space\n\nOnly implemented on macOS. On Linux, behavior is always equivalent to `move`.",
         key: "quick-terminal-space-behavior",
         name: "macOS space behavior",
-        options: ["move", "remain"],
+        options: [{value: "move", label: "Move"}, {value: "remain", label: "Remain"}],
         since: "1.1.0",
-        type: "dropdown"
+        type: "pill"
     },
     quitAfterLastWindowClosed: {
         default: false,
@@ -1324,27 +1319,29 @@ export const registry = {
         type: "switch"
     },
     quitAfterLastWindowClosedDelay: {
+        allowEmpty: true,
         default: "",
         description: "Controls how long Ghostty stays running after the last surface is closed. Only has an effect if `quit-after-last-window-closed` is true. Minimum value is 1s. Duration format: numbers followed by time units (y, d, h, m, s, ms, us, ns).\n\nOnly implemented on Linux.",
         key: "quit-after-last-window-closed-delay",
         name: "Delay before auto quitting",
         platform: ["linux"],
-        type: "text"
+        type: "duration"
     },
     resizeOverlay: {
         default: "after-first",
         description: "Controls when resize overlays are shown. Resize overlays are a transient popup showing the terminal size while resizing.\n\n- `always` - Always show resize overlays.\n- `never` - Never show resize overlays.\n- `after-first` - Don't show on initial creation, but show on subsequent resizes.",
         key: "resize-overlay",
         name: "Show resize overlays",
-        options: ["always", "never", "after-first"],
-        type: "dropdown"
+        options: [{value: "always", label: "Always"}, {value: "never", label: "Never"}, {value: "after-first", label: "After first"}],
+        type: "pill"
     },
     resizeOverlayDuration: {
+        allowEmpty: false,
         default: "750ms",
         description: "If resize overlays are enabled, controls how long the overlay is visible before it is hidden. Default is 750ms. Duration format: numbers followed by time units (y, d, h, m, s, ms, us, ns).",
         key: "resize-overlay-duration",
         name: "Show resize overlay time",
-        type: "text"
+        type: "duration"
     },
     resizeOverlayPosition: {
         default: "center",
@@ -1365,10 +1362,11 @@ export const registry = {
     scrollToBottom: {
         default: "",
         description: "When to scroll the surface to the bottom. Comma-separated list of options. Prefix with `no-` to disable.\n\nOptions:\n- `keystroke` - Scroll to bottom when a key is pressed that sends data to the PTY (default: on)\n- `output` - Scroll to bottom when new data is displayed (default: off)",
+        features: [{id: "keystroke", label: "On keystroke", default: true}, {id: "output", label: "On output", default: false}],
         key: "scroll-to-bottom",
         name: "Scroll to bottom on",
         note: "Comma-separated list. Available values: keystroke, output.",
-        type: "text"
+        type: "feature-list"
     },
     scrollbackLimit: {
         default: 10000000,
@@ -1427,7 +1425,8 @@ export const registry = {
         description: "Background color for selection. If not set, the selection color is the inverted window background/foreground. Specified as hex or named X11 color. Since 1.2.0, can be set to `cell-foreground` or `cell-background`.",
         key: "selection-background",
         name: "Selection background color",
-        type: "color"
+        presets: [{value: "cell-foreground", label: "Cell FG"}, {value: "cell-background", label: "Cell BG"}],
+        type: "custom-color"
     },
     selectionClearOnCopy: {
         default: false,
@@ -1449,7 +1448,8 @@ export const registry = {
         description: "Foreground color for selection. If not set, the selection color is the inverted window background/foreground. Specified as hex or named X11 color. Since 1.2.0, can be set to `cell-foreground` or `cell-background`.",
         key: "selection-foreground",
         name: "Selection foreground color",
-        type: "color"
+        presets: [{value: "cell-foreground", label: "Cell FG"}, {value: "cell-background", label: "Cell BG"}],
+        type: "custom-color"
     },
     selectionWordChars: {
         default: "",
@@ -1469,12 +1469,13 @@ export const registry = {
         type: "dropdown"
     },
     shellIntegrationFeatures: {
-        default: "cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,path",
+        default: "",
         description: "Shell integration features to enable. Comma-separated list. Prefix with `no-` to disable. Use `true`/`false` to turn all features on or off.\n\nFeatures:\n- `cursor` - Set cursor to bar at prompt (default: on)\n- `sudo` - Set sudo wrapper to preserve terminfo (default: off)\n- `title` - Set window title via shell integration (default: on)\n- `ssh-env` - SSH environment variable compatibility: converts TERM to xterm-256color and propagates COLORTERM (default: off, since 1.2.0)\n- `ssh-terminfo` - Automatic terminfo installation on remote hosts (default: off, since 1.2.0)\n- `path` - Add Ghostty's binary directory to PATH (default: on)",
+        features: [{id: "cursor", label: "Cursor", default: true}, {id: "sudo", label: "Sudo", default: false}, {id: "title", label: "Title", default: true}, {id: "ssh-env", label: "SSH environment", default: false}, {id: "ssh-terminfo", label: "SSH terminfo", default: false}, {id: "path", label: "Path", default: true}],
         key: "shell-integration-features",
         name: "Shell integration features",
         note: "Available features: cursor, sudo, title, ssh-env, ssh-terminfo, path. Including one force enables it, prefixing it with <code>no-</code> force disables it, omitting it falls back to default.",
-        type: "text"
+        type: "feature-list"
     },
     splitDividerColor: {
         default: "",
@@ -1540,6 +1541,7 @@ export const registry = {
         type: "switch"
     },
     undoTimeout: {
+        allowEmpty: true,
         default: "",
         description: "The duration that undo operations remain available. Default is 5 seconds. Duration format: numbers followed by time units (y, d, h, m, s, ms, us, ns).\n\nA timeout of zero effectively disables undo. Only supported on macOS.",
         key: "undo-timeout",
@@ -1547,7 +1549,7 @@ export const registry = {
         note: "Timeout for undo operations. Format like <code>1h30m</code>, <code>5s</code>, <code>500ms</code>.",
         platform: ["macos"],
         since: "1.2.0",
-        type: "text"
+        type: "duration"
     },
     unfocusedSplitFill: {
         default: "",
@@ -1651,15 +1653,19 @@ export const registry = {
         default: "2",
         description: "Horizontal window padding between terminal cells and left/right window borders. Value is in points (scaled for DPI). Can specify two comma-separated values for different left/right padding: `window-padding-x = 2,4`.",
         key: "window-padding-x",
+        labels: ["Left", "Right"],
+        min: 0,
         name: "Horizontal window padding",
-        type: "text"
+        type: "dual-number"
     },
     windowPaddingY: {
         default: "2",
         description: "Vertical window padding between terminal cells and top/bottom window borders. Value is in points (scaled for DPI). Can specify two comma-separated values for different top/bottom padding: `window-padding-y = 2,4`.",
         key: "window-padding-y",
+        labels: ["Top", "Bottom"],
+        min: 0,
         name: "Vertical window padding",
-        type: "text"
+        type: "dual-number"
     },
     windowPositionX: {
         default: 0,
