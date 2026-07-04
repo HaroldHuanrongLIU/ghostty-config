@@ -11,7 +11,7 @@
 
     let {
         value = $bindable([]),
-        placeholder = "New item", // eslint-disable-line prefer-const
+        placeholder = "Add a value…", // eslint-disable-line prefer-const
         canReorder = true, // eslint-disable-line prefer-const
     }: Props = $props();
 

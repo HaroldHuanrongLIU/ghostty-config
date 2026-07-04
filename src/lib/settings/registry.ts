@@ -17,49 +17,49 @@ export const registry = {
         default: "",
         description: "Thickness in pixels or percentage adjustment of box drawing characters.",
         key: "adjust-box-thickness",
-        name: "Box thickness adjustment",
+        name: "Box thickness",
         type: "number-units"
     },
     adjustCellHeight: {
         default: "",
         description: "Adjust the cell height determined by the font. The font will be centered vertically in the cell. Values can be integers or percentages.",
         key: "adjust-cell-height",
-        name: "Cell height adjustment",
+        name: "Cell height",
         type: "number-units"
     },
     adjustCellWidth: {
         default: "",
         description: "Adjust the cell width determined by the font. Values can be integers (1, -1) or a percentage (20%, -15%). Represents the amount to change the original value, not the absolute value.",
         key: "adjust-cell-width",
-        name: "Cell width adjustment",
+        name: "Cell width",
         type: "number-units"
     },
     adjustCursorHeight: {
         default: "",
         description: "Height in pixels or percentage adjustment of the cursor. Currently applies to all cursor types: bar, rect, and outlined rect.",
         key: "adjust-cursor-height",
-        name: "Cursor height adjustment",
+        name: "Cursor height",
         type: "number-units"
     },
     adjustCursorThickness: {
         default: "",
         description: "Thickness in pixels or percentage adjustment of the bar cursor and outlined rect cursor.",
         key: "adjust-cursor-thickness",
-        name: "Cursor thickness adjustment",
+        name: "Cursor thickness",
         type: "number-units"
     },
     adjustFontBaseline: {
         default: "",
         description: "Distance in pixels or percentage adjustment from the bottom of the cell to the text baseline. Increase to move baseline UP, decrease to move baseline DOWN.",
         key: "adjust-font-baseline",
-        name: "Font baseline adjustment",
+        name: "Font baseline",
         type: "number-units"
     },
     adjustIconHeight: {
         default: "",
         description: "Height in pixels or percentage adjustment of maximum height for nerd font icons. Powerline symbols are not affected.",
         key: "adjust-icon-height",
-        name: "Nerd font icon height adjustment",
+        name: "Nerd font icon height",
         since: "1.2.0",
         type: "number-units"
     },
@@ -67,42 +67,42 @@ export const registry = {
         default: "",
         description: "Distance in pixels or percentage adjustment from the top of the cell to the top of the overline. Increase to move overline DOWN, decrease to move overline UP.",
         key: "adjust-overline-position",
-        name: "Overline position adjustment",
+        name: "Overline position",
         type: "number-units"
     },
     adjustOverlineThickness: {
         default: "",
         description: "Thickness in pixels or percentage adjustment of the overline.",
         key: "adjust-overline-thickness",
-        name: "Overline thickness adjustment",
+        name: "Overline thickness",
         type: "number-units"
     },
     adjustStrikethroughPosition: {
         default: "",
         description: "Distance in pixels or percentage adjustment from the top of the cell to the top of the strikethrough. Increase to move strikethrough DOWN, decrease to move strikethrough UP.",
         key: "adjust-strikethrough-position",
-        name: "Strikethrough position adjustment",
+        name: "Strikethrough position",
         type: "number-units"
     },
     adjustStrikethroughThickness: {
         default: "",
         description: "Thickness in pixels or percentage adjustment of the strikethrough.",
         key: "adjust-strikethrough-thickness",
-        name: "Strikethrough thickness adjustment",
+        name: "Strikethrough thickness",
         type: "number-units"
     },
     adjustUnderlinePosition: {
         default: "",
         description: "Distance in pixels or percentage adjustment from the top of the cell to the top of the underline. Increase to move underline DOWN, decrease to move underline UP.",
         key: "adjust-underline-position",
-        name: "Underline position adjustment",
+        name: "Underline position",
         type: "number-units"
     },
     adjustUnderlineThickness: {
         default: "",
         description: "Thickness in pixels of the underline.",
         key: "adjust-underline-thickness",
-        name: "Underline thickness adjustment",
+        name: "Underline thickness",
         type: "number-units"
     },
     alphaBlending: {
@@ -363,6 +363,7 @@ export const registry = {
         description: "Additional configuration files to read. Can be repeated. Paths are relative to the config file containing the directive. Prepend `?` to suppress errors if the file doesn't exist. Cycles are not allowed. Config files are loaded after the config they're defined within.",
         key: "config-file",
         name: "Additional config file",
+        placeholder: "path/to/config",
         type: "repeatable-text"
     },
     confirmCloseSurface: {
@@ -437,6 +438,7 @@ export const registry = {
         key: "custom-shader",
         name: "Custom shader",
         note: "This matches the API of Shadertoy.",
+        placeholder: "path/to/shader.glsl",
         type: "repeatable-text"
     },
     customShaderAnimation: {
@@ -466,6 +468,7 @@ export const registry = {
         description: "Extra environment variables to pass to commands launched in a terminal surface. Format: `KEY=VALUE`. Setting a key to an empty string removes it. Setting `env` to an empty string resets the entire map.",
         key: "env",
         name: "Environment variables",
+        placeholder: "KEY=VALUE",
         since: "1.2.0",
         type: "repeatable-text"
     },
@@ -493,6 +496,7 @@ export const registry = {
         key: "font-codepoint-map",
         name: "Unicode-specifc font mapping",
         note: "",
+        placeholder: "U+E000-U+E0FF=Symbols Nerd Font",
         type: "repeatable-text"
     },
     fontFamily: {
@@ -529,6 +533,7 @@ export const registry = {
         description: "Apply a font feature. To enable multiple font features you can repeat this multiple times or use a comma-separated list.\n\nSyntax: `feat`, `+feat`, `-feat`, `feat on`, `feat off`, `feat=1`, `feat=0`.\n\nTo disable programming ligatures, use `-calt`. To generally disable most ligatures, use `-calt, -liga, -dlig`.",
         key: "font-feature",
         name: "Font ligature settings",
+        placeholder: "e.g. -calt",
         type: "repeatable-text"
     },
     fontShapingBreak: {
@@ -612,6 +617,7 @@ export const registry = {
         description: "A repeatable configuration to set one or more font variations values for a variable font. Format: `id=value` where `id` is the axis identifier (always 4 characters, e.g. `wght`). Common axes: `wght` (weight), `slnt` (slant), `ital` (italic), `opsz` (optical size), `wdth` (width).",
         key: "font-variation",
         name: "Main font variant",
+        placeholder: "e.g. wght=600",
         type: "repeatable-text"
     },
     fontVariationBold: {
@@ -801,6 +807,7 @@ export const registry = {
         key: "input",
         name: "Initial input",
         note: "Input for tty launch. Can be raw text, zig string literal, or path:/to/file.",
+        placeholder: "raw:text or path:/to/file",
         since: "1.2.0",
         type: "repeatable-text"
     },
@@ -1170,8 +1177,8 @@ export const registry = {
         description: "Determines whether running programs can detect the shift key pressed with a mouse click. Typically, shift extends mouse selection.\n\n- `false` - Shift not sent with mouse protocol, will extend selection. Program can override with XTSHIFTESCAPE.\n- `true` - Shift sent with mouse protocol. Program can override with XTSHIFTESCAPE.\n- `never` - Same as false but program cannot override with XTSHIFTESCAPE.\n- `always` - Same as true but program cannot override with XTSHIFTESCAPE.",
         key: "mouse-shift-capture",
         name: "Allow shift with mouse click",
-        options: [{value: "true", label: "On"}, {value: "false", label: "Off"}, {value: "always", label: "Always"}, {value: "never", label: "Never"}],
-        type: "pill"
+        options: ["true", "false", "always", "never"],
+        type: "dropdown"
     },
     notifyOnCommandFinish: {
         default: "never",
