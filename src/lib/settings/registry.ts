@@ -536,7 +536,7 @@ export const registry = {
         description: "Locations to break font shaping into multiple runs. A run is a contiguous segment of text that is shaped together. Breaking runs prevents ligatures from forming across certain points.\n\nCombine values with a comma to set multiple options. Prefix an option with `no-` to disable it.\n\nAvailable options:\n- `cursor` - Break runs under the cursor.",
         features: [{id: "cursor", label: "Cursor", default: false}],
         key: "font-shaping-break",
-        name: "How to break runs (cursor, no-cursor).",
+        name: "Font shaping breaks",
         since: "1.2.0",
         type: "feature-list"
     },
@@ -662,7 +662,7 @@ export const registry = {
         default: "unicode",
         description: "The method to use for calculating the cell width of a grapheme cluster.\n\n- `unicode` - Use the Unicode standard (default, correct but may cause cursor-desync with legacy programs).\n- `legacy` - Use a legacy method such as wcswidth (maximizes compatibility with legacy programs).\n\nIf a running program explicitly enables terminal mode 2027, then `unicode` width will be forced regardless of this configuration.",
         key: "grapheme-width-method",
-        name: "Grapheme width calculation method.",
+        name: "Grapheme width calculation",
         options: [{value: "unicode", label: "Unicode"}, {value: "legacy", label: "Legacy"}],
         type: "pill"
     },
@@ -1184,13 +1184,13 @@ export const registry = {
         type: "pill"
     },
     notifyOnCommandFinishAction: {
-        default: "bell",
+        default: "",
         description: "How the user is notified when command finished notifications are enabled. Comma-separated list. Prefix with `no-` to disable.\n\nOptions:\n- `bell` - enabled by default\n- `notify` - disabled by default",
+        features: [{id: "bell", label: "Bell", default: true}, {id: "notify", label: "Notification", default: false}],
         key: "notify-on-command-finish-action",
         name: "Notification action",
-        note: "How the user is notified. Comma-separated list. Available: bell, notify. Prefix with <code>no-</code> to disable.",
         since: "1.3.0",
-        type: "text"
+        type: "feature-list"
     },
     notifyOnCommandFinishAfter: {
         allowEmpty: false,
@@ -1324,6 +1324,7 @@ export const registry = {
         description: "Controls how long Ghostty stays running after the last surface is closed. Only has an effect if `quit-after-last-window-closed` is true. Minimum value is 1s. Duration format: numbers followed by time units (y, d, h, m, s, ms, us, ns).\n\nOnly implemented on Linux.",
         key: "quit-after-last-window-closed-delay",
         name: "Delay before auto quitting",
+        note: "How long Ghostty keeps running after the last window closes. Leave empty to quit immediately. Format like <code>5s</code>, <code>500ms</code>.",
         platform: ["linux"],
         type: "duration"
     },
@@ -1341,6 +1342,7 @@ export const registry = {
         description: "If resize overlays are enabled, controls how long the overlay is visible before it is hidden. Default is 750ms. Duration format: numbers followed by time units (y, d, h, m, s, ms, us, ns).",
         key: "resize-overlay-duration",
         name: "Show resize overlay time",
+        note: "How long the resize overlay stays visible. Format like <code>750ms</code>, <code>1s</code>.",
         type: "duration"
     },
     resizeOverlayPosition: {

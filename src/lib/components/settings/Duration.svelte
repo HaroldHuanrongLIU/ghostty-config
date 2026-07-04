@@ -137,7 +137,7 @@
             class:error={showError}
             type="text"
             bind:value={() => internalValue, onchange}
-            placeholder={placeholder || (nullable ? "unset" : "e.g. 750ms")}
+            placeholder={placeholder || (nullable ? "Default" : "e.g. 750ms")}
             spellcheck="false"
             autocomplete="off"
             size={Math.max(internalValue.length, 8) - 2}

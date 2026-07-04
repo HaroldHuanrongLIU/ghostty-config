@@ -13,6 +13,18 @@ export interface ColorScheme {
     selectionForeground?: HexColor;
 }
 
+/**
+ * Resolve a color config value that may be a `cell-foreground` / `cell-background` keyword
+ * (accepted by the cursor and selection color settings since Ghostty 1.2.0) into a concrete
+ * color for previews. Hex/named colors pass through unchanged; an empty value stays empty so
+ * callers can apply their own fallback.
+ */
+export function resolveCellColor(value: string, foreground: string, background: string): string {
+    if (value === "cell-foreground") return foreground;
+    if (value === "cell-background") return background;
+    return value;
+}
+
 export function luminosity(color: HexColor) {
     const int = parseInt(color.substring(1), 16);
     const red = int >> 16 & 0xFF;
