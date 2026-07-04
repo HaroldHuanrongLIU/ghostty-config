@@ -91,6 +91,12 @@ The ESLint config does not catch all legacy store usage, be deliberate.
 
 **Serialization**: only values differing from defaults appear in the generated config output. `diff()` handles this, do not add serialization logic elsewhere.
 
+**Defaults**: a registry `default` must equal Ghostty's actual default *state*, since `diff()` / `isNonDefault()` compare against it. Where that default lives depends on the value encoding:
+
+- **Scalar settings** (`text`, `number`, `dropdown`, `pill`, `duration`, `color`, `dual-number`, …) — the default lives only in `default`, so set the literal real value. Use `""` only when Ghostty's genuine default is unset/empty.
+- **Override-encoded settings** (`feature-list`; also `palette` / `keybind`) — the stored value is already *relative* to per-item sub-defaults, so the setting `default` is `""` (no overrides) and the real defaults live in the item metadata (e.g. `features[].default`). This is why `""` is correct there despite the items having defaults.
+- **Durations** specifically: a concrete default → set it with `allowEmpty: false`; a genuinely-unset default → `"" + allowEmpty: true`.
+
 **Setting keys**: Ghostty config keys are `kebab-case` (e.g. `font-size`). Registry keys are `camelCase` (e.g. `fontSize`). The `key` field on each registry entry is the Ghostty string; the JS property name is the camelCase identifier. These must remain in sync with Ghostty's actual config schema.
 
 **Code style quick reference**:

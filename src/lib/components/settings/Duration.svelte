@@ -105,8 +105,11 @@
     }
 
 
-    // Separate internal input state from the bound value so we can show a preview and errors without mutating the bound value until valid
-    let internalValue = $state(value);
+    // Internal input state tracks the bound `value` via a writable $derived: local edits override
+    // it while typing, but it reverts to `value` whenever that changes from the outside
+    // (reset-to-default, config import). We only push back to `value` once the input parses, so a
+    // live preview/error can be shown for an invalid draft without mutating the bound value.
+    let internalValue = $derived(value);
     const result = $derived(parse(internalValue));
     const preview = $derived(humanize(result.segments));
     const showError = $derived(!result.ok && internalValue !== "");

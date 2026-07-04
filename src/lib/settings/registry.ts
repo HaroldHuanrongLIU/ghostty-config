@@ -326,8 +326,8 @@ export const registry = {
         description: "Whether to allow programs running in the terminal to read from the system clipboard (OSC 52).\n\n- `ask` - Ask the user before allowing (default)\n- `allow` - Always allow\n- `deny` - Always deny",
         key: "clipboard-read",
         name: "Allow terminal to read clipboard",
-        options: ["ask", "allow", "deny"],
-        type: "dropdown"
+        options: [{value: "ask", label: "Ask"}, {value: "allow", label: "Allow"}, {value: "deny", label: "Deny"}],
+        type: "pill"
     },
     clipboardTrimTrailingSpaces: {
         default: true,
@@ -341,8 +341,8 @@ export const registry = {
         description: "Whether to allow programs running in the terminal to write to the system clipboard (OSC 52).\n\n- `ask` - Ask the user before allowing\n- `allow` - Always allow (default)\n- `deny` - Always deny",
         key: "clipboard-write",
         name: "Allow terminal to write clipboard",
-        options: ["ask", "allow", "deny"],
-        type: "dropdown"
+        options: [{value: "ask", label: "Ask"}, {value: "allow", label: "Allow"}, {value: "deny", label: "Deny"}],
+        type: "pill"
     },
     command: {
         default: "",
@@ -446,8 +446,8 @@ export const registry = {
         description: "If `true` (default), the focused terminal surface will run an animation loop when custom shaders are used.\n\n- `false` - Shader only renders when the terminal is updated\n- `true` - Run animation loop when terminal is focused\n- `always` - Always run the animation loop regardless of focus (uses more CPU)",
         key: "custom-shader-animation",
         name: "Allow shaders to animate",
-        options: ["false", "true", "always"],
-        type: "dropdown"
+        options: [{value: "false", label: "Off"}, {value: "true", label: "On"}, {value: "always", label: "Always"}],
+        type: "pill"
     },
     desktopNotifications: {
         default: true,
@@ -718,18 +718,18 @@ export const registry = {
         description: "Controls whether the Ghostty GTK application runs in single-instance mode.\n\n- `true` - Single instance mode: new processes create windows in the existing instance\n- `false` - Each new process launches a separate application\n- `detect` - Assume single-instance unless TERM_PROGRAM is set or CLI args exist (default)\n\nNote: debug builds have a separate single-instance ID to avoid conflicting with release builds.",
         key: "gtk-single-instance",
         name: "Single-instance mode",
-        options: ["detect", "true", "false"],
+        options: [{value: "detect", label: "Detect"}, {value: "true", label: "On"}, {value: "false", label: "Off"}],
         platform: ["gtk"],
-        type: "dropdown"
+        type: "pill"
     },
     gtkTabsLocation: {
         default: "top",
         description: "Determines the side of the screen that the GTK tab bar will stick to. When `hidden`, a tab button displaying the number of tabs appears in the title bar.",
         key: "gtk-tabs-location",
         name: "Tab location",
-        options: ["top", "bottom"],
+        options: [{value: "top", label: "Top"}, {value: "bottom", label: "Bottom"}],
         platform: ["gtk"],
-        type: "dropdown"
+        type: "pill"
     },
     gtkTitlebar: {
         default: true,
@@ -754,9 +754,9 @@ export const registry = {
         key: "gtk-titlebar-style",
         name: "Titlebar style",
         note: "<code>tabs</code> merges the tab bar and titlebar to save vertical space.",
-        options: ["native", "tabs"],
+        options: [{value: "native", label: "Native"}, {value: "tabs", label: "Tabs"}],
         platform: ["gtk"],
-        type: "dropdown"
+        type: "pill"
     },
     gtkToolbarStyle: {
         default: "raised",
@@ -917,9 +917,9 @@ export const registry = {
         key: "link-previews",
         name: "Show link previews",
         note: "When set to <code>osc8</code>, previews are only shown for hyperlinks created with the OSC 8 sequence.",
-        options: ["true", "false", "osc8"],
+        options: [{value: "true", label: "On"}, {value: "false", label: "Off"}, {value: "osc8", label: "OSC 8"}],
         since: "1.2.0",
-        type: "dropdown"
+        type: "pill"
     },
     linkUrl: {
         default: true,
@@ -999,19 +999,19 @@ export const registry = {
         key: "macos-dock-drop-behavior",
         name: "Dock drop behavior",
         note: "What happens when a file is dropped onto Ghostty's dock icon.",
-        options: ["new-tab", "new-window"],
+        options: [{value: "new-tab", label: "New tab"}, {value: "new-window", label: "New window"}],
         platform: ["macos"],
-        type: "dropdown"
+        type: "pill"
     },
     macosHidden: {
         default: "never",
         description: "Control whether the macOS app is excluded from the dock and app switcher. Mainly intended for those primarily using quick-terminal mode.\n\n- `never` - App is never hidden (default)\n- `always` - App is always hidden\n\nNote: When hidden, keyboard layout changes will not be automatic.",
         key: "macos-hidden",
         name: "Hide from dock and switcher",
-        options: ["never", "always"],
+        options: [{value: "never", label: "Never"}, {value: "always", label: "Always"}],
         platform: ["macos"],
         since: "1.2.0",
-        type: "dropdown"
+        type: "pill"
     },
     macosIcon: {
         default: "official",
@@ -1083,19 +1083,19 @@ export const registry = {
         key: "macos-shortcuts",
         name: "macOS shortcuts",
         note: "Controls whether macOS system shortcuts (e.g. Cmd+Space) can be captured.",
-        options: ["allow", "deny", "ask"],
+        options: [{value: "allow", label: "Allow"}, {value: "deny", label: "Deny"}, {value: "ask", label: "Ask"}],
         platform: ["macos"],
         since: "1.2.0",
-        type: "dropdown"
+        type: "pill"
     },
     macosTitlebarProxyIcon: {
         default: "visible",
         description: "Whether the proxy icon in the macOS titlebar is visible. The proxy icon represents the folder of the current working directory. Only visible with native macOS titlebar style.",
         key: "macos-titlebar-proxy-icon",
         name: "Titlebar proxy icon",
-        options: ["visible", "hidden"],
+        options: [{value: "visible", label: "Visible"}, {value: "hidden", label: "Hidden"}],
         platform: ["macos"],
-        type: "dropdown"
+        type: "pill"
     },
     macosTitlebarStyle: {
         default: "transparent",
@@ -1111,10 +1111,10 @@ export const registry = {
         description: "Whether the window buttons (traffic lights) in the macOS titlebar are visible.\n\n- `visible` - Show the window buttons (default)\n- `hidden` - Hide the window buttons\n\nNo effect when `window-decoration = none` or `macos-titlebar-style = hidden`.",
         key: "macos-window-buttons",
         name: "Window buttons (traffic lights)",
-        options: ["visible", "hidden"],
+        options: [{value: "visible", label: "Visible"}, {value: "hidden", label: "Hidden"}],
         platform: ["macos"],
         since: "1.2.0",
-        type: "dropdown"
+        type: "pill"
     },
     macosWindowShadow: {
         default: true,
@@ -1276,7 +1276,7 @@ export const registry = {
         default: "on-demand",
         description: "Determines when the quick terminal receives keyboard input.\n\n- `none` - Will not receive any keyboard input\n- `on-demand` - Only receives keyboard input when focused (default)\n- `exclusive` - Always receives keyboard input, even when another window is focused\n\nOnly has an effect on Linux Wayland. On macOS, behavior is always equivalent to `on-demand`.",
         key: "quick-terminal-keyboard-interactivity",
-        name: "Keyboard interactivity",
+        name: "Keyboard input",
         note: "Controls when the quick terminal receives keyboard input. GTK Wayland only.",
         options: [{value: "none", label: "None"}, {value: "on-demand", label: "On demand"}, {value: "exclusive", label: "Exclusive"}],
         platform: ["gtk-wayland"],
@@ -1393,9 +1393,9 @@ export const registry = {
         key: "scrollbar",
         name: "Scrollbar visibility",
         note: "Currently only supported on macOS.",
-        options: ["system", "never"],
+        options: [{value: "system", label: "System"}, {value: "never", label: "Never"}],
         platform: ["macos"],
-        type: "dropdown"
+        type: "pill"
     },
     searchBackground: {
         default: "",
@@ -1550,8 +1550,8 @@ export const registry = {
         type: "switch"
     },
     undoTimeout: {
-        allowEmpty: true,
-        default: "",
+        allowEmpty: false,
+        default: "5s",
         description: "The duration that undo operations remain available. Default is 5 seconds. Duration format: numbers followed by time units (y, d, h, m, s, ms, us, ns).\n\nA timeout of zero effectively disables undo. Only supported on macOS.",
         key: "undo-timeout",
         name: "Undo timeout",
@@ -1597,9 +1597,9 @@ export const registry = {
         description: "The color space to use when interpreting terminal colors.\n\n- `srgb` - Interpret colors in the sRGB color space (default).\n- `display-p3` - Interpret colors in the Display P3 color space.\n\nCurrently only supported on macOS.",
         key: "window-colorspace",
         name: "Window colorspace",
-        options: ["srgb", "display-p3"],
+        options: [{value: "srgb", label: "sRGB"}, {value: "display-p3", label: "Display P3"}],
         platform: ["macos"],
-        type: "dropdown"
+        type: "pill"
     },
     windowDecoration: {
         default: "auto",
@@ -1640,8 +1640,8 @@ export const registry = {
         description: "The position where new tabs are created.\n\n- `current` - Insert after the currently focused tab, or at the end if no focused tabs.\n- `end` - Insert at the end of the tab list.",
         key: "window-new-tab-position",
         name: "New tab position",
-        options: ["current", "end"],
-        type: "dropdown"
+        options: [{value: "current", label: "Current"}, {value: "end", label: "End"}],
+        type: "pill"
     },
     windowPaddingBalance: {
         default: false,
@@ -1707,18 +1707,18 @@ export const registry = {
         description: "Whether to enable saving and restoring window state (position, size, tabs, splits, etc.).\n\n- `default` - Use the default system behavior (macOS: only if forcibly terminated or configured system-wide).\n- `never` - Never save window state.\n- `always` - Always save window state on exit.\n\nCurrently only supported on macOS.",
         key: "window-save-state",
         name: "Save window state",
-        options: ["default", "never", "always"],
+        options: [{value: "default", label: "Default"}, {value: "never", label: "Never"}, {value: "always", label: "Always"}],
         platform: ["macos"],
-        type: "dropdown"
+        type: "pill"
     },
     windowShowTabBar: {
         default: "auto",
         description: "Whether to show the tab bar.\n\n- `always` - Always display the tab bar, even with only one tab. (since 1.2.0)\n- `auto` - Show the tab bar only when there are two or more tabs.\n- `never` - Never show the tab bar. Tabs accessible via tab overview or keybinds.\n\nCurrently only supported on Linux (GTK).",
         key: "window-show-tab-bar",
         name: "Show tab bar",
-        options: ["always", "auto", "never"],
+        options: [{value: "always", label: "Always"}, {value: "auto", label: "Auto"}, {value: "never", label: "Never"}],
         platform: ["gtk"],
-        type: "dropdown"
+        type: "pill"
     },
     windowStepResize: {
         default: false,
