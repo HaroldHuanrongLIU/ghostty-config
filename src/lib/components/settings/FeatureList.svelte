@@ -90,7 +90,7 @@
 
 
 {#if isEditorOpen}
-    <DialogModal title={settingInfo.name} onclose={closeEditor}>
+    <DialogModal title={settingInfo?.name ?? "Configure Features"} onclose={closeEditor}>
         {#snippet icon()}
             <CheckListIcon />
         {/snippet}

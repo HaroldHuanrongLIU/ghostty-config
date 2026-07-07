@@ -7,11 +7,16 @@
     interface Props {
         value: string;
         options: RadioOption[];
+        name?: string;
         onchange?: (checked: string) => void;
     }
 
     // eslint-disable-next-line prefer-const
-    let {value = $bindable(), options, onchange}: Props = $props();
+    let {value = $bindable(), options, name, onchange}: Props = $props();
+
+    // Fallback so radios are still grouped when no explicit name is provided.
+    const uid = $props.id();
+    const groupName = $derived(name ?? uid);
 
     function change(optValue: string) {
         value = optValue;
@@ -23,7 +28,7 @@
 <div class="radio-group" role="radiogroup">
     {#each options as option (option.value)}
         <label class="radio" class:checked={value === option.value} aria-checked={value === option.value}>
-            <input class="radio-input" type="radio" checked={value === option.value} onchange={() => change(option.value)} />
+            <input class="radio-input" type="radio" name={groupName} checked={value === option.value} onchange={() => change(option.value)} />
             {option.label}
         </label>
     {/each}

@@ -6,7 +6,7 @@
      * a single "unit" to have an empty inline label (e.g. "px" -> "", "pct" -> "%"),
      * but for now this is good enough for the primary use case.
      *
-     * TODO: also consider if this could be folder into the Number component as an
+     * TODO: also consider if this could be folded into the Number component as an
      * optional "units" feature, since it's basically just a number input with some
      * extra parsing and a pill button group attached.
      */
