@@ -34,7 +34,7 @@
     import CustomNumber from "$lib/components/settings/CustomNumber.svelte";
     import ScrollMultiplier from "$lib/components/settings/ScrollMultiplier.svelte";
     import NumberWithUnits from "$lib/components/settings/NumberWithUnits.svelte";
-    import {type SettingsRegistry, type WidgetDef} from "$lib/settings/types";
+    import {type DropdownOption, type FeatureDef, type PillOption, type SettingsRegistry, type SpecialValue, type WidgetDef} from "$lib/settings/types";
 
 
     const category = $derived(navigation.find(c => c.id === $page.params.category));
@@ -85,8 +85,40 @@
                     >
                         {#if widget}
                             <!-- Refactoring: nav-provided widget wins over the registry `type` (strangler-fig). -->
-                            {#if widget.type === "dual-number"}
+                            {#if widget.type === "switch"}
+                                <Switch bind:checked={config[settingId] as boolean} />
+                            {:else if widget.type === "text"}
+                                <Text bind:value={config[settingId] as string} placeholder={widget.placeholder} size={widget.size} />
+                            {:else if widget.type === "range"}
+                                <Range bind:value={config[settingId] as number} min={widget.min} max={widget.max} step={widget.step} showLabels={widget.showLabels} />
+                            {:else if widget.type === "number"}
+                                <Number bind:value={config[settingId] as number} min={widget.min} max={widget.max} step={widget.step} size={widget.size} placeholder={widget.placeholder} integer={widget.integer} />
+                            {:else if widget.type === "dropdown"}
+                                <Dropdown bind:value={config[settingId] as string} options={widget.options as Array<DropdownOption | string>} placeholder={widget.placeholder} allowEmpty={widget.allowEmpty} emptyLabel={widget.emptyLabel} disabled={setting.disabled} />
+                            {:else if widget.type === "theme"}
+                                <Theme bind:value={config[settingId] as string} options={widget.options as Array<DropdownOption | string>} />
+                            {:else if widget.type === "color"}
+                                <Color defaultValue={setting.default as HexColor} bind:value={config[settingId] as HexColor} />
+                            {:else if widget.type === "palette"}
+                                <Palette defaultValue={setting.default as HexColor[]} bind:value={config[settingId] as HexColor[]} />
+                            {:else if widget.type === "repeatable-text"}
+                                <RepeatableText bind:value={config[settingId] as string[]} placeholder={widget.placeholder} canReorder={widget.canReorder} />
+                            {:else if widget.type === "feature-list"}
+                                <FeatureList bind:value={config[settingId] as string} features={widget.features as FeatureDef[]} />
+                            {:else if widget.type === "pill"}
+                                <PillButtons bind:value={config[settingId] as string} options={widget.options as PillOption[]} />
+                            {:else if widget.type === "duration"}
+                                <Duration bind:value={config[settingId] as string} nullable={widget.allowEmpty} placeholder={widget.placeholder} />
+                            {:else if widget.type === "dual-number"}
                                 <DualNumber bind:value={config[settingId] as string} labels={widget.labels as [string, string]} min={widget.min} max={widget.max} step={widget.step} />
+                            {:else if widget.type === "custom-color"}
+                                <CustomColor bind:value={config[settingId] as string} presets={widget.presets as SpecialValue[]} widget={widget.widget} default={setting.default as HexColor} />
+                            {:else if widget.type === "custom-number"}
+                                <CustomNumber bind:value={config[settingId] as string} presets={widget.presets as SpecialValue[]} min={widget.min} max={widget.max} step={widget.step} size={widget.size} placeholder={widget.placeholder} integer={widget.integer} widget={widget.widget} />
+                            {:else if widget.type === "scroll-multiplier"}
+                                <ScrollMultiplier bind:value={config[settingId] as string} />
+                            {:else if widget.type === "number-units"}
+                                <NumberWithUnits bind:value={config[settingId] as string} />
                             {/if}
                         {:else if setting.type === "switch"}
                             <Switch bind:checked={config[settingId] as boolean} />
