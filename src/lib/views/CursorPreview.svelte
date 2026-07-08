@@ -1,5 +1,6 @@
 <script lang="ts">
     import config from "$lib/stores/config.svelte";
+    import {resolveCellColor} from "$lib/utils/colors";
     import {onMount} from "svelte";
 
     let isCursorVisible = $state(true);
@@ -13,8 +14,9 @@
     });
 
     // TODO: make less gross with less ternaries
-    const cursorColor = $derived(config.cursorColor || config.foreground);
-    const cursorText = $derived(isCursorVisible ? config.cursorText || config.background : config.foreground);
+    // cursorColor/cursorText may be `cell-foreground`/`cell-background` keywords; resolve them.
+    const cursorColor = $derived(resolveCellColor(config.cursorColor, config.foreground, config.background) || config.foreground);
+    const cursorText = $derived(isCursorVisible ? resolveCellColor(config.cursorText, config.foreground, config.background) || config.background : config.foreground);
     const cursorOpacity = $derived(isCursorVisible ? Math.round(config.cursorOpacity * 255).toString(16) : "00");
 </script>
 

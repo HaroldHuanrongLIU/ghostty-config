@@ -1,5 +1,6 @@
 import themes from "$lib/data/themes";
 import {frameUrls, iconUrls} from "$lib/data/macicons";
+import {themeIcon} from "$lib/utils/themes";
 import {registry, type SettingsSchema} from "./registry";
 
 
@@ -46,7 +47,11 @@ const syncInitializers: Initializer[] = [
     (reg: SettingsSchema) => {
         const themeSetting = reg.theme;
         if (themeSetting?.type !== "theme") return;
-        themeSetting.options = Object.keys(themes);
+        themeSetting.options = Object.entries(themes).map(([name, scheme]) => ({
+            name,
+            value: name,
+            icon: themeIcon(scheme)
+        }));
     },
 
     // MacOS icon options

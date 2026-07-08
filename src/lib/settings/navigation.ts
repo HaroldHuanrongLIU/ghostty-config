@@ -311,7 +311,9 @@ export const navigation = [
                     "fontShapingBreak",
                     "fontFeature",
                     "fontSyntheticStyle",
-                    "alphaBlending"
+                    "alphaBlending",
+                    "graphemeWidthMethod",
+                    "freetypeLoadFlags"
                 ]
             },
             {
@@ -350,8 +352,8 @@ export const navigation = [
             },
             {
                 id: "advanced",
-                name: "Advanced Font & Cell Settings",
-                note: "The settings below have very little validation in Ghostty and can cause your terminal to become unusable. Be careful messing with any of these.",
+                name: "Metric Adjustments",
+                note: "Fine-grained pixel/percentage tweaks to cell and glyph metrics. These have very little validation in Ghostty and can make your terminal unusable. Be careful messing with any of these.",
                 settings: [
                     "adjustCellWidth",
                     "adjustCellHeight",
@@ -365,9 +367,7 @@ export const navigation = [
                     "adjustCursorThickness",
                     "adjustBoxThickness",
                     "adjustCursorHeight",
-                    "adjustIconHeight",
-                    "graphemeWidthMethod",
-                    "freetypeLoadFlags"
+                    "adjustIconHeight"
                 ]
             }
         ]

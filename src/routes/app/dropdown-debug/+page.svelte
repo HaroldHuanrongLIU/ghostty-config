@@ -9,11 +9,13 @@
 
     if (!dev) error(404, "Not found");
 
-    let basicValue = $state("detect");
-    let clearableValue = $state("");
-    let richValue = $state("nord");
-    let searchableValue = $state("setting-31");
-    let groupedValue = $state("window:compact");
+    const values = $state<Record<string, string>>({
+        basic: "detect",
+        clearable: "",
+        rich: "nord",
+        searchable: "setting-31",
+        grouped: "window:compact"
+    });
 
     const basicOptions = ["none", "detect", "bash", "fish", "zsh", "nushell"];
 
@@ -123,14 +125,14 @@
 <Page title="Dropdown Debug">
     <Group title="Basic">
         <Item name="Default behavior" note="Drop-in replacement for previous string/object options.">
-            <Dropdown bind:value={basicValue} options={basicOptions} />
+            <Dropdown bind:value={values.basic} options={basicOptions} />
         </Item>
     </Group>
 
     <Group title="Clearable Empty State">
         <Item name="Allow empty selection" note="Clear returns the field to placeholder state.">
             <Dropdown
-                bind:value={clearableValue}
+                bind:value={values.clearable}
                 options={richOptions}
                 placeholder="Choose a theme"
                 allowEmpty
@@ -141,14 +143,14 @@
 
     <Group title="Rich Options">
         <Item name="Descriptions + icons" note="Richer option metadata for better discoverability.">
-            <Dropdown bind:value={richValue} options={richOptions} placeholder="Theme" />
+            <Dropdown bind:value={values.rich} options={richOptions} placeholder="Theme" />
         </Item>
     </Group>
 
     <Group title="Searchable">
         <Item name="Large option list" note="Search matches title, value, description, and search keywords.">
             <Dropdown
-                bind:value={searchableValue}
+                bind:value={values.searchable}
                 options={searchableOptions}
                 searchable
                 placeholder="Find generated option"
@@ -159,7 +161,7 @@
     <Group title="Grouped + Separated">
         <Item name="Structured options" note="Supports labels and separators between logical sections.">
             <Dropdown
-                bind:value={groupedValue}
+                bind:value={values.grouped}
                 groups={groupedOptions}
                 searchable
                 allowEmpty
@@ -170,15 +172,10 @@
 
     <Group title="Live Values" borderless>
         <div class="preview">
-            <div><span>basicValue</span><code>{basicValue || "<empty>"}</code></div>
-            <Separator />
-            <div><span>clearableValue</span><code>{clearableValue || "<empty>"}</code></div>
-            <Separator />
-            <div><span>richValue</span><code>{richValue || "<empty>"}</code></div>
-            <Separator />
-            <div><span>searchableValue</span><code>{searchableValue || "<empty>"}</code></div>
-            <Separator />
-            <div><span>groupedValue</span><code>{groupedValue || "<empty>"}</code></div>
+            {#each Object.entries(values) as [k, v] (k)}
+                <div><span>{k}</span><code>{v || "<empty>"}</code></div>
+                <Separator />
+            {/each}
         </div>
     </Group>
 </Page>

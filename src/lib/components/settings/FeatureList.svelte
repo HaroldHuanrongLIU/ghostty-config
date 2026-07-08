@@ -1,0 +1,112 @@
+<script lang="ts">
+    import {getSetting} from "$lib/contexts";
+    import Button from "../Button.svelte";
+    import CheckListIcon from "../icons/CheckListIcon.svelte";
+    import DialogModal from "../modals/DialogModal.svelte";
+    import Group from "./Group.svelte";
+    import Item from "./Item.svelte";
+    import Separator from "./Separator.svelte";
+    import Switch from "./Switch.svelte";
+
+
+    interface Feature {
+        id: string; // e.g. 'cursor', 'sudo'
+        label: string; // e.g. 'Cursor', 'Sudo'
+        default: boolean; // whether the default state is on or off
+    }
+
+    interface Props {
+        value: string;
+        features: Feature[];
+    };
+
+    // eslint-disable-next-line prefer-const
+    let {value = $bindable(), features}: Props = $props();
+    const settingInfo = getSetting();
+
+    let states = $derived.by(() => parse(value));
+
+    function parse(raw: string): Record<string, boolean> {
+        const result: Record<string, boolean> = {};
+
+        // Handle the special case of "true" or "false" to set all features to on/off
+        const trimmed = raw.trim().toLowerCase();
+        if (trimmed === "true" || trimmed === "false") {
+            const val = trimmed === "true";
+            for (const f of features) result[f.id] = val;
+            return result;
+        }
+
+        // Otherwise, parse the comma-separated list of feature IDs, with optional "no-" prefix for negation
+        for (const f of features) result[f.id] = f.default;
+        for (const token of raw.split(",").map(t => t.trim()).filter(Boolean)) {
+            const isNegation = token.startsWith("no-");
+            const id = isNegation ? token.slice(3) : token;
+            if (!(id in result)) continue; // ignore unknown features
+            if (isNegation) result[id] = false;
+            else result[id] = true;
+        }
+        return result;
+    }
+
+    function serialize(current: Record<string, boolean>): string {
+        return features
+            .filter(f => current[f.id] !== f.default) // only emit overrides
+            .map(f => current[f.id] ? f.id : `no-${f.id}`)
+            .join(",");
+    }
+
+    // Modal stuff
+    let isEditorOpen = $state(false);
+    let draftState = $state<Record<string, boolean>>({});
+    function openEditor() {
+        draftState = {...states};
+        isEditorOpen = true;
+    }
+
+    function closeEditor() {
+        isEditorOpen = false;
+        draftState = {};
+    }
+
+    function onEditorSave() {
+        // Commit the draft state to the actual value since relying on derived didn't work for some reason
+        states = {...draftState};
+        value = serialize(states);
+        closeEditor();
+    }
+
+    function handleEditorKeydown(event: KeyboardEvent) {
+        if (!isEditorOpen) return;
+        if (event.key === "Escape") closeEditor();
+    }
+</script>
+
+<Button onclick={openEditor}>
+    Configure…
+</Button>
+
+<svelte:document onkeydown={handleEditorKeydown} />
+
+
+{#if isEditorOpen}
+    <DialogModal title={settingInfo?.name ?? "Configure Features"} onclose={closeEditor}>
+        {#snippet icon()}
+            <CheckListIcon />
+        {/snippet}
+
+        <Group>
+            {#each features as feature, i (feature.id)}
+                <Item name={feature.label} isNonDefault={draftState[feature.id] !== feature.default} onReset={() => draftState[feature.id] = feature.default}>
+                    <Switch bind:checked={draftState[feature.id]} />
+                </Item>
+                {#if i < features.length - 1}<Separator />{/if}
+            {/each}
+        </Group>
+
+        {#snippet footer()}
+            <Button onclick={closeEditor}>Close</Button>
+            <Button primary onclick={onEditorSave}>Save</Button>
+        {/snippet}
+    </DialogModal>
+{/if}

@@ -5,6 +5,7 @@
     import {alert} from "$lib/stores/modals.svelte";
     import Badge from "../Badge.svelte";
     import {searchState} from "$lib/stores/search.svelte";
+    import {setSetting} from "$lib/contexts";
 
     interface Props {
         name?: string;
@@ -16,9 +17,10 @@
         children: Snippet;
         onReset?: () => void;
         isNonDefault?: boolean;
+        inline?: boolean;
     }
 
-    const {name = "", note = "", platform, since, description, settingId, children, onReset, isNonDefault = false}: Props = $props();
+    const {name = "", note = "", platform, since, description, settingId, children, onReset, isNonDefault = false, inline = true}: Props = $props();
     const tooltipAttachment = createTooltipAttachment("Reset to default");
 
 
@@ -77,6 +79,10 @@
             shouldHighlight = false;
         };
     });
+
+    // Give the setting context so that child components can access the setting info if needed
+    // svelte-ignore state_referenced_locally
+    setSetting({name, note, platform, since, description: description || ""});
 </script>
 
 <div
@@ -117,7 +123,7 @@
         {/if}
         {#if description}
             <div class="row-right">
-                <div class="setting">{@render children()}</div>
+                {#if inline}<div class="setting">{@render children()}</div>{/if}
                 <button type="button" class="setting-info" aria-label="Full description" onclick={() => alert({title: name, message: description})}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 56 56">
                         <path d="M0 0h56v56H0z" fill="none" />
@@ -126,7 +132,7 @@
                 </button>
             </div>
         {:else}
-            <div class="setting">{@render children()}</div>
+            {#if inline}<div class="setting">{@render children()}</div>{/if}
         {/if}
     </div>
     {#if note}
@@ -135,6 +141,7 @@
         {@html note} <!-- TODO: sanitize this? It's written and maintained by us -->
     </div>
     {/if}
+    {#if !inline}<div class="setting">{@render children()}</div>{/if}
 </div>
 
 
@@ -147,6 +154,10 @@
     /* box-sizing: border-box; */
     /* padding: 4px 8px; */
     /* margin: -4px -8px; */
+    /* position: relative; */
+}
+
+.setting-item.flash-highlight {
     position: relative;
 }
 
@@ -266,6 +277,12 @@
 
 .row-right .setting {
     flex: none;
+}
+
+/* When the setting is not inline, we want the description/info button to be on the same row as the name, and the setting content to be below. */
+.setting-item > .setting {
+    margin-top: 4px;
+    justify-content: flex-start;
 }
 
 .note {

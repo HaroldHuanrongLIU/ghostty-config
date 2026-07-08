@@ -5,7 +5,7 @@
 
     type Props = {
         value: string;
-        options: Array<string | {name: string, value: string}>
+        options: Array<string | {name: string, value: string, icon?: string}>
     };
 
     // eslint-disable-next-line prefer-const
@@ -24,4 +24,4 @@
     }
 </script>
 
-<Dropdown bind:value {options} {change} placeholder="Choose a theme" searchable allowEmpty emptyLabel="Reset Theme" />
+<Dropdown bind:value {options} {change} placeholder="Choose a theme" searchable allowEmpty emptyLabel="Reset Theme" iconSize={32} />

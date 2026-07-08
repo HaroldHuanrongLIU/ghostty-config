@@ -1,4 +1,6 @@
 <script lang="ts">
+    import {countDecimalPlaces} from "$lib/utils/numbers";
+
     type Props = {
         value: number | undefined;
         min?: number;
@@ -7,11 +9,13 @@
         size?: number;
         placeholder?: string;
         integer?: boolean;
+        onchange?: (value: number | undefined) => void;
+        disabled?: boolean;
     };
 
     // why is eslint like this smh
     // eslint-disable-next-line prefer-const
-    let {value = $bindable(), min, max, step = 1, size, placeholder, integer = true}: Props = $props();
+    let {value = $bindable(), min, max, step = 1, size, placeholder, integer = true, onchange, disabled}: Props = $props();
 
 
     const wasInitiallyUndefined = value === undefined;
@@ -45,6 +49,9 @@
     // Determine if we should enforce integer values based on props
     const isActuallyInteger = $derived.by(() => integer && isDetectedAsInteger);
 
+    // Calculate the number of decimal places to show based on step, min, and max
+    const maxDecimalPlaces = $derived(Math.max(countDecimalPlaces(min), countDecimalPlaces(max), countDecimalPlaces(step)));
+
     $effect(() => {
         if (!size) {
             const referenceValue = (value !== undefined && !Number.isNaN(value) && isValid()) ? value : (max ?? 100);
@@ -52,29 +59,34 @@
         }
     });
 
+    function commit(next: number | undefined) {
+        value = next;
+        onchange?.(next);
+    }
+
     function increment() {
         // If current value is undefined, NaN, or invalid, start from min (or 0)
         if (value === undefined || Number.isNaN(value) || !isValid()) {
-            value = min ?? 0;
+            commit(min ?? 0);
             return;
         }
 
         const newValue = value + step;
         if (max === undefined || newValue <= max) {
-            value = newValue;
+            commit(isActuallyInteger ? newValue : parseFloat(newValue.toFixed(maxDecimalPlaces)));
         }
     }
 
     function decrement() {
         // If current value is undefined, NaN, or invalid, start from max (or min, or 0)
         if (value === undefined || Number.isNaN(value) || !isValid()) {
-            value = max ?? Math.max(0, min ?? 0);
+            commit(max ?? Math.max(0, min ?? 0));
             return;
         }
 
         const newValue = value - step;
         if (min === undefined || newValue >= min) {
-            value = newValue;
+            commit(isActuallyInteger ? newValue : parseFloat(newValue.toFixed(maxDecimalPlaces)));
         }
     }
 
@@ -84,9 +96,7 @@
 
         // Allow empty input - set to undefined
         if (inputText === "") {
-            if (wasInitiallyUndefined) {
-                value = undefined;
-            }
+            if (wasInitiallyUndefined) commit(undefined);
             return;
         }
 
@@ -96,7 +106,7 @@
             let constrainedValue = isActuallyInteger ? Math.round(numValue) : numValue;
             if (min !== undefined && constrainedValue < min) constrainedValue = min;
             if (max !== undefined && constrainedValue > max) constrainedValue = max;
-            value = constrainedValue;
+            commit(constrainedValue);
         }
         else {
             // Cleanup for this will happen onBlur rather than trying to be smart while they type
@@ -125,7 +135,7 @@
     // Use an IIFE to do this synchronously during init and make svelte stop complaining
     (() => {
         if (typeof value === "string") {
-            value = isActuallyInteger ? parseInt(value, 10) : parseFloat(value);
+            commit(isActuallyInteger ? parseInt(value, 10) : parseFloat(value));
         }
     })();
 </script>
@@ -140,12 +150,13 @@
         oninput={handleInput}
         onkeydown={handleKeyDown}
         onblur={onBlur}
+        {disabled}
     />
     <div class="steppers">
-        <button type="button" class="stepper up" onclick={increment} aria-label="Increment">
+        <button type="button" class="stepper up" onclick={increment} aria-label="Increment" {disabled}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6" /></svg>
         </button>
-        <button type="button" class="stepper down" onclick={decrement} aria-label="Decrement">
+        <button type="button" class="stepper down" onclick={decrement} aria-label="Decrement" {disabled}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
         </button>
     </div>

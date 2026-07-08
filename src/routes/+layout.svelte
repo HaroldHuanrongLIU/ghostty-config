@@ -19,6 +19,7 @@
     import calligraphy from "$lib/images/tabs/font-playground.webp";
 
     import config from "$lib/stores/config.svelte";
+    import {resolveCellColor} from "$lib/utils/colors";
     import app from "$lib/stores/state.svelte";
     import navigation, {tabGroups} from "$lib/settings/navigation";
 
@@ -28,13 +29,16 @@
 
         const add = (key: string, val: string) => str += `--config-${key}: ${val};`;
 
-        // Add the base colors
-        add("bg", config.background);
-        add("fg", config.foreground);
-        add("selection-bg", config.selectionBackground || config.foreground);
-        add("selection-fg", config.selectionForeground || config.background);
-        add("cursor-color", config.cursorColor || config.foreground);
-        add("cursor-text", config.cursorText || config.background);
+        // Add the base colors. Cursor/selection colors may hold `cell-foreground`/`cell-background`
+        // keywords, so resolve those against fg/bg before emitting them as CSS colors.
+        const fg = config.foreground;
+        const bg = config.background;
+        add("bg", bg);
+        add("fg", fg);
+        add("selection-bg", resolveCellColor(config.selectionBackground, fg, bg) || fg);
+        add("selection-fg", resolveCellColor(config.selectionForeground, fg, bg) || bg);
+        add("cursor-color", resolveCellColor(config.cursorColor, fg, bg) || fg);
+        add("cursor-text", resolveCellColor(config.cursorText, fg, bg) || bg);
         add("cursor-opacity", String(config.cursorOpacity ?? 1));
 
         // Add the palette colors
@@ -43,7 +47,7 @@
 
         // TODO: consider honoring separate fonts for bold/italic and such in previews
         // Add font settings
-        add("font-family", config.fontFamily || "JetBrainsMono Nerd Font");
+        add("font-family", config.fontFamily.filter(Boolean).map(f => JSON.stringify(f)).join(", ") || JSON.stringify("JetBrainsMono Nerd Font"));
         add("font-size", `${config.fontSize}px`);
 
         return str;
