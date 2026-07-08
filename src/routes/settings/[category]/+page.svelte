@@ -15,12 +15,10 @@
     import Dropdown from "$lib/components/settings/Dropdown.svelte";
     import Color from "$lib/components/settings/Color.svelte";
     import Palette from "$lib/components/settings/Palette.svelte";
-    import BaseColorPreview from "$lib/views/BaseColorPreview.svelte";
-    import CursorPreview from "$lib/views/CursorPreview.svelte";
-    import PalettePreview from "$lib/views/PalettePreview.svelte";
     import Admonition from "$lib/components/Admonition.svelte";
     import Theme from "$lib/components/settings/Theme.svelte";
-    import AppIconPreview from "$lib/views/AppIconPreview.svelte";
+    import {previews} from "./previews";
+    import type {Component} from "svelte";
     import type {HexColor} from "$lib/utils/colors";
     import {resolve} from "$app/paths";
     import {success} from "$lib/stores/toasts.svelte";
@@ -51,17 +49,10 @@
         {/if}
         {#each category.groups as group (group.id)}
             <Group title={group.name} note={"note" in group ? group.note : undefined}>
-                {#if category.id === "colors" && group.id === "base"}
-                    <BaseColorPreview />
-                    <Separator />
-                {:else if category.id === "colors" && group.id === "cursor"}
-                    <CursorPreview />
-                    <Separator />
-                {:else if category.id === "colors" && group.id === "palette"}
-                    <PalettePreview />
-                    <Separator />
-                {:else if category.id === "macos" && group.id === "icon"}
-                    <AppIconPreview />
+                {@const previewKey = "preview" in group ? group.preview : undefined}
+                {#if previewKey && previews[previewKey]}
+                    {@const Preview = previews[previewKey] as Component}
+                    <Preview />
                     <Separator />
                 {/if}
                 {#each group.settings as entry, i (i)}

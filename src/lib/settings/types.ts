@@ -204,6 +204,11 @@ export type TypeToValue<T extends SettingDef["type"]> = Extract<SettingDef, {typ
 
 export type SettingsRegistry = Record<string, SettingDef>;
 
+// Keys for the group preview components. The union lives here (data-only) so navigation can
+// reference it while the renderer-side previews map implements `Record<PreviewKey, Component>` —
+// nav keys are checked valid and the map is checked exhaustive, both against this one list.
+export type PreviewKey = "baseColor" | "cursor" | "palette" | "appIcon";
+
 // WidgetDef: widget selection + metadata, living in navigation.
 // It is data-only, a string discriminant plus plain params,
 // so navigation.ts stays free of `.svelte` imports and validateNavigation()/Bun tests stay clean.
