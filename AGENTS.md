@@ -45,9 +45,13 @@ A typed tree of panels → groups → setting keys that drives the sidebar UI. A
 
 **Adding a setting to `registry.ts` without placing it in `navigation.ts` will throw at dev startup.** Do not add a bypass or suppress this validation.
 
+### `src/lib/settings/options.ts`
+
+Option lists derived purely from build-time data (the generated `themes`/`macicons` modules): computed once at module scope and referenced directly by widget defs in `navigation.ts`. No runtime population step — the nav tree is complete at import time. Add new static option lists here.
+
 ### `src/lib/settings/initializers.ts`
 
-Populates fields that require runtime data: theme option lists, macOS icon option lists, etc. Sync initializers run first via `runSyncInitializers()`; async ones after. Add new runtime-populated options here, do not mutate the registry from a component.
+Populates registry fields that require **genuinely runtime** data: OS detection for platform-dependent defaults, and (future) async sources like a native font list. Sync initializers run first via `runSyncInitializers()`; async ones after. Add new runtime-populated fields here, do not mutate the registry from a component — and if the data is static, use `options.ts` instead.
 
 ### `src/lib/stores/config.svelte.ts`
 

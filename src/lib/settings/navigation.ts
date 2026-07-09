@@ -13,6 +13,7 @@ import gtk from "$lib/images/tabs/gtk.svg";
 import linux from "$lib/images/tabs/linux.webp";
 import macos from "$lib/images/tabs/macos.webp";
 
+import {macosIconFrameOptions, macosIconOptions, themeOptions} from "./options";
 import {registry} from "./registry";
 import type {PreviewKey, WidgetDef} from "./types";
 import {dev} from "$app/environment";
@@ -255,7 +256,7 @@ export const navigation = [
                 id: "general",
                 name: "",
                 settings: [
-                    {id: "theme", widget: {type: "theme", options: []}},
+                    {id: "theme", widget: {type: "theme", options: themeOptions}},
                     {id: "boldColor", widget: {type: "custom-color", presets: [{value: "bright", label: "Bright"}]}},
                     {id: "faintOpacity", widget: {type: "range", min: 0, max: 1, step: 0.01}},
                     {id: "minimumContrast", widget: {type: "range", min: 1, max: 21, step: 0.1}},
@@ -507,9 +508,9 @@ export const navigation = [
                 note: "If you choose the <code>custom-style</code> option, you can use any of the other icon settings to customize your icon with a live preview.",
                 preview: "appIcon",
                 settings: [
-                    {id: "macosIcon", widget: {type: "dropdown", options: []}},
+                    {id: "macosIcon", widget: {type: "dropdown", options: macosIconOptions}},
                     "macosCustomIcon",
-                    {id: "macosIconFrame", widget: {type: "dropdown", options: []}},
+                    {id: "macosIconFrame", widget: {type: "dropdown", options: macosIconFrameOptions}},
                     {id: "macosIconGhostColor", widget: {type: "color"}},
                     {id: "macosIconScreenColor", widget: {type: "color"}}
                 ]
