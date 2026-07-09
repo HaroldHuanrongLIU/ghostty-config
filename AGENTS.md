@@ -20,11 +20,11 @@ All three must pass cleanly. Do not open or mark a PR ready if any fail.
 
 ## Architecture: read before touching settings
 
-Three files form the core of the settings system with strict relationships between them.
+These files form the core of the settings system with strict relationships between them. The triad that most changes must stay in sync is `types.ts` (shapes) → `registry.ts` (config-key data) → `navigation.ts` (widget selection + UI tree).
 
 ### `src/lib/settings/types.ts`
 
-Defines all setting type shapes as a discriminated union (`SwitchSetting | TextSetting | DropdownSetting | ...`), the `SettingDef` union, `SettingsRegistry`, and the `TypeToValue<T>` mapped type that maps a `type` string literal to its runtime value type.
+Defines `SettingInfo` — the registry entry shape, which describes a **config key only**: `key`, `name`, `description`, `note`, `platform`, `since`, `default` (a `string | string[]`), and the optional `repeatable?: true` value-shape flag. It also defines `WidgetDef`, the data-only discriminated union for widget selection + widget metadata that lives on the nav tree (not the registry). There is **no `SettingDef` union and no `TypeToValue`** — widget selection was moved to `navigation.ts` and the store was flattened to strings (see the store-flatten note below). Widget-metadata types (`DropdownOption`, `FeatureDef`, `PillOption`, `SpecialValue`) live here too, consumed by `WidgetDef` and the renderer.
 
 ### `src/lib/settings/registry.ts`
 
@@ -34,7 +34,7 @@ The flat camelCase-keyed record of every setting. The export pattern is:
 export const registry = { ... } satisfies SettingsRegistry;
 ```
 
-**`satisfies` without `as const` is intentional and must be preserved.** `as const` makes array fields (like `options`) readonly, breaking the initializers that assign to them at runtime. The `SettingsSchema` mapped type at the bottom of this file widens only the `default` field via `TypeToValue`, allowing initializers to mutate defaults without `@ts-expect-error`.
+**`satisfies` without `as const` is intentional and must be preserved.** It keeps `repeatable: true` as a literal so the `SettingValues` mapped type at the bottom of the file can resolve each key to `string[]` (repeatable) or `string` (everything else) — this is what replaced the old `type`/`TypeToValue` machinery. The store holds only strings; a registry `default` is a literal string (`"13"`, `"false"`, `""` for unset) or a `string[]` for repeatable settings. Initializers may still mutate `.default` (it's a plain `string`), so don't add `as const`.
 
 ### `src/lib/settings/navigation.ts`
 
@@ -52,6 +52,12 @@ Option lists derived purely from build-time data (the generated `themes`/`macico
 ### `src/lib/settings/initializers.ts`
 
 Populates registry fields that require **genuinely runtime** data: OS detection for platform-dependent defaults, and (future) async sources like a native font list. Sync initializers run first via `runSyncInitializers()`; async ones after. Add new runtime-populated fields here, do not mutate the registry from a component — and if the data is static, use `options.ts` instead.
+
+### `src/lib/settings/codecs.ts`
+
+The config store is **flat strings** (`string | string[]`), mirroring Ghostty's own string-at-rest model. Every widget binds the raw store string and converts through a codec here — including the `Switch`/`Number`/`Range` primitives (`boolCodec`/`numberCodec`), which parse/serialize internally rather than binding a native `boolean`/`number`. A codec is a co-located `parse` + `serialize` pair (`Codec<T>`), unit-tested as pure functions in `codecs.test.ts` (no component mount; precedent is `keybinds.ts`/`keybinds.test.ts`). Add new formats here — do **not** re-implement parse/serialize inside a component or in `config.svelte.ts`.
+
+**Symmetric vs. parse-and-validate:** most formats are symmetric (`parse(serialize(v))` round-trips), so they're a `Codec<T>`. When a format canonicalizes — `serialize(parse(x)) !== x`, as with durations (`"90m"` → `"1h30m"`) — expose a `parse`-for-display + validate helper instead of a symmetric codec (see `parseDuration`/`humanizeDuration`).
 
 ### `src/lib/stores/config.svelte.ts`
 
@@ -109,11 +115,11 @@ A real emulator like `ghostty-web` keeps its state inside a surface that must be
 
 **Serialization**: only values differing from defaults appear in the generated config output. `diff()` handles this, do not add serialization logic elsewhere.
 
-**Defaults**: a registry `default` must equal Ghostty's actual default *state*, since `diff()` / `isNonDefault()` compare against it. Where that default lives depends on the value encoding:
+**Defaults**: a registry `default` is a **string** (or `string[]`) and must equal Ghostty's actual default *state*, since `diff()` / `isNonDefault()` compare against it as strings. Where that default lives depends on the value encoding:
 
-- **Scalar settings** (`text`, `number`, `dropdown`, `pill`, `duration`, `color`, `dual-number`, …) — the default lives only in `default`, so set the literal real value. Use `""` only when Ghostty's genuine default is unset/empty.
-- **Override-encoded settings** (`feature-list`; also `palette` / `keybind`) — the stored value is already *relative* to per-item sub-defaults, so the setting `default` is `""` (no overrides) and the real defaults live in the item metadata (e.g. `features[].default`). This is why `""` is correct there despite the items having defaults.
-- **Durations** specifically: a concrete default → set it with `allowEmpty: false`; a genuinely-unset default → `"" + allowEmpty: true`.
+- **Scalar settings** (rendered by `text`/`number`/`dropdown`/`pill`/`duration`/`color`/`dual-number`/… widgets) — the default lives only in `default`, string-encoded (`"13"`, `"false"`, `"native"`). Use `""` only when Ghostty's genuine default is unset/empty.
+- **Override-encoded settings** (`feature-list`; also `palette` / `keybind`) — the stored value is already *relative* to per-item sub-defaults, so the setting `default` is `""`/`[]` (no overrides) and the real per-item defaults live in the **widget metadata on `navigation.ts`** (e.g. a `feature-list` widget's `features[].default`), not the registry. This is why `""` is correct there despite the items having defaults.
+- **Durations** specifically: a concrete default → set the string (`"5s"`) and pair the nav `duration` widget with `allowEmpty: false`; a genuinely-unset default → `""` + `allowEmpty: true`. Note `allowEmpty` is a nav-side `WidgetDef` param now, not a registry field.
 
 **Setting keys**: Ghostty config keys are `kebab-case` (e.g. `font-size`). Registry keys are `camelCase` (e.g. `fontSize`). The `key` field on each registry entry is the Ghostty string; the JS property name is the camelCase identifier. These must remain in sync with Ghostty's actual config schema.
 
