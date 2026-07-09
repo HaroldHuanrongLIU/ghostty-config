@@ -10,6 +10,7 @@
     import registry from "$lib/settings/registry";
     import navigation from "$lib/settings/navigation";
     import config, {isNonDefault, resetSetting} from "$lib/stores/config.svelte";
+    import {effectiveColors, isSchemeColorKey} from "$lib/stores/theme.svelte";
     import Text from "$lib/components/settings/Text.svelte";
     import Number from "$lib/components/settings/Number.svelte";
     import Dropdown from "$lib/components/settings/Dropdown.svelte";
@@ -37,6 +38,19 @@
 
     const category = $derived(navigation.find(c => c.id === $page.params.category));
     const title = $derived(category?.name ?? $page.params.category);
+
+    // Color editors display the *effective* color (override > theme > default) so the picker
+    // always agrees with the preview; edits write an override into config, and reset/right-click
+    // drops the key back to following the theme. Non-scheme colors (titlebar, search, …) are
+    // untouched by themes and read config directly.
+    function displayColor(settingId: keyof typeof registry): string {
+        return isSchemeColorKey(settingId) ? effectiveColors()[settingId] : config[settingId] as string;
+    }
+
+    function setColorOverride(settingId: keyof typeof registry, v: string) {
+        // @ts-expect-error same union-write limitation as config.svelte.ts's resetSetting
+        config[settingId] = v;
+    }
 </script>
 
 
@@ -81,17 +95,17 @@
                             {:else if widget.type === "range"}
                                 <Range bind:value={config[settingId] as string} min={widget.min} max={widget.max} step={widget.step} showLabels={widget.showLabels} />
                             {:else if widget.type === "number"}
-                                <!-- Per the AGENTS.md defaults convention, `default: ""` means the setting is
-                                     genuinely unset by default — exactly the ones a user may clear back to unset. -->
+                                <!-- Per the AGENTS.md defaults convention, `default: ""` means the setting is genuinely unset by default — exactly the ones a user may clear back to unset. -->
                                 <Number bind:value={config[settingId] as string} min={widget.min} max={widget.max} step={widget.step} size={widget.size} placeholder={widget.placeholder} integer={widget.integer} nullable={setting.default === ""} />
                             {:else if widget.type === "dropdown"}
                                 <Dropdown bind:value={config[settingId] as string} options={widget.options as Array<DropdownOption | string>} placeholder={widget.placeholder} allowEmpty={widget.allowEmpty} emptyLabel={widget.emptyLabel} disabled={setting.disabled} />
                             {:else if widget.type === "theme"}
                                 <Theme bind:value={config[settingId] as string} options={widget.options as Array<DropdownOption | string>} />
                             {:else if widget.type === "color"}
-                                <Color defaultValue={setting.default as HexColor} bind:value={config[settingId] as HexColor} />
+                                <Color defaultValue={setting.default as HexColor} bind:value={() => displayColor(settingId) as HexColor, (v: HexColor) => setColorOverride(settingId, v)} />
                             {:else if widget.type === "palette"}
-                                <Palette defaultValue={setting.default as HexColor[]} bind:value={config[settingId] as HexColor[]} />
+                                <!-- Displays the effective palette; each edit writes a single-index override so un-touched theme colors never enter config (and thus never serialize). -->
+                                <Palette defaultValue={setting.default as HexColor[]} value={effectiveColors().palette as HexColor[]} onSet={(idx: number, c: HexColor) => {config.palette[idx] = c;}} />
                             {:else if widget.type === "repeatable-text"}
                                 <RepeatableText bind:value={config[settingId] as string[]} placeholder={widget.placeholder} canReorder={widget.canReorder} />
                             {:else if widget.type === "feature-list"}
@@ -103,7 +117,7 @@
                             {:else if widget.type === "dual-number"}
                                 <DualNumber bind:value={config[settingId] as string} labels={widget.labels as [string, string]} min={widget.min} max={widget.max} step={widget.step} />
                             {:else if widget.type === "custom-color"}
-                                <CustomColor bind:value={config[settingId] as string} presets={widget.presets as SpecialValue[]} widget={widget.widget} default={setting.default as HexColor} />
+                                <CustomColor bind:value={() => displayColor(settingId), (v: string) => setColorOverride(settingId, v)} presets={widget.presets as SpecialValue[]} widget={widget.widget} default={setting.default as HexColor} />
                             {:else if widget.type === "custom-number"}
                                 <CustomNumber bind:value={config[settingId] as string} presets={widget.presets as SpecialValue[]} min={widget.min} max={widget.max} step={widget.step} size={widget.size} placeholder={widget.placeholder} integer={widget.integer} widget={widget.widget} />
                             {:else if widget.type === "scroll-multiplier"}
