@@ -3,7 +3,16 @@
     import Color from "./Color.svelte";
 
 
-    const {value = $bindable([]), defaultValue}: {value: HexColor[], defaultValue: HexColor[]} = $props();
+    interface Props {
+        value: HexColor[];
+        defaultValue: HexColor[];
+        // When provided, edits go through this per-index callback instead of mutating `value`
+        // This lets a caller display one array (e.g. effective/themed colors) while writing
+        // overrides elsewhere. Without it, plain two-way binding as before.
+        onSet?: (index: number, color: HexColor) => void;
+    }
+
+    const {value = $bindable([]), defaultValue, onSet}: Props = $props();
 
     const countPerRow = $derived(defaultValue.length >= 8 ? 8 : defaultValue.length);
     const numRows = $derived(Math.ceil(defaultValue.length / countPerRow));
@@ -12,7 +21,7 @@
 <div class="grid-container">
     <div class="color-grid" style:--count-per-row={countPerRow} style:--num-rows={numRows}>
         {#each value as _, i (i)}
-            <Color defaultValue={defaultValue[i]} bind:value={value[i]} size={40} label={(i + 1).toString()} />
+            <Color defaultValue={defaultValue[i]} bind:value={() => value[i], (v: HexColor) => onSet ? onSet(i, v) : value[i] = v} size={40} label={(i + 1).toString()} />
         {/each}
     </div>
 </div>
