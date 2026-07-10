@@ -10,7 +10,7 @@
     import registry from "$lib/settings/registry";
     import navigation from "$lib/settings/navigation";
     import config, {isNonDefault, resetSetting} from "$lib/stores/config.svelte";
-    import {effectiveColors, isSchemeColorKey} from "$lib/stores/theme.svelte";
+    import {effectiveColors, isSchemeColorKey, themeSelection} from "$lib/stores/theme.svelte";
     import Text from "$lib/components/settings/Text.svelte";
     import Number from "$lib/components/settings/Number.svelte";
     import Dropdown from "$lib/components/settings/Dropdown.svelte";
@@ -51,6 +51,13 @@
         // @ts-expect-error same union-write limitation as config.svelte.ts's resetSetting
         config[settingId] = v;
     }
+
+    // While a theme is active, resetting a theme-affected color makes it *follow the theme*,
+    // not the app default. The reset toasts say so instead of the misleading "reset to default".
+    const themeActive = $derived(themeSelection().kind !== "unset");
+    function isThemedColor(settingId: keyof typeof registry): boolean {
+        return themeActive && (isSchemeColorKey(settingId) || settingId === "palette");
+    }
 </script>
 
 
@@ -84,7 +91,7 @@
                         isNonDefault={isNonDefault(settingId)}
                         onReset={() => {
                             resetSetting(settingId);
-                            success(`${setting.name} reset to default`);
+                            success(isThemedColor(settingId) ? `${setting.name} now follows the theme` : `${setting.name} reset to default`);
                         }}
                     >
                         {#if widget}
@@ -102,10 +109,10 @@
                             {:else if widget.type === "theme"}
                                 <Theme bind:value={config[settingId] as string} options={widget.options as Array<DropdownOption | string>} />
                             {:else if widget.type === "color"}
-                                <Color defaultValue={setting.default as HexColor} bind:value={() => displayColor(settingId) as HexColor, (v: HexColor) => setColorOverride(settingId, v)} />
+                                <Color defaultValue={setting.default as HexColor} bind:value={() => displayColor(settingId) as HexColor, (v: HexColor) => setColorOverride(settingId, v)} resetMessage={isThemedColor(settingId) ? `${setting.name} now follows the theme` : undefined} />
                             {:else if widget.type === "palette"}
                                 <!-- Displays the effective palette; each edit writes a single-index override so un-touched theme colors never enter config (and thus never serialize). -->
-                                <Palette defaultValue={setting.default as HexColor[]} value={effectiveColors().palette as HexColor[]} onSet={(idx: number, c: HexColor) => {config.palette[idx] = c;}} />
+                                <Palette defaultValue={setting.default as HexColor[]} value={effectiveColors().palette as HexColor[]} onSet={(idx: number, c: HexColor) => {config.palette[idx] = c;}} resetMessage={isThemedColor(settingId) ? "Color now follows the theme" : undefined} />
                             {:else if widget.type === "repeatable-text"}
                                 <RepeatableText bind:value={config[settingId] as string[]} placeholder={widget.placeholder} canReorder={widget.canReorder} />
                             {:else if widget.type === "feature-list"}
@@ -117,7 +124,7 @@
                             {:else if widget.type === "dual-number"}
                                 <DualNumber bind:value={config[settingId] as string} labels={widget.labels as [string, string]} min={widget.min} max={widget.max} step={widget.step} />
                             {:else if widget.type === "custom-color"}
-                                <CustomColor bind:value={() => displayColor(settingId), (v: string) => setColorOverride(settingId, v)} presets={widget.presets as SpecialValue[]} widget={widget.widget} default={setting.default as HexColor} />
+                                <CustomColor bind:value={() => displayColor(settingId), (v: string) => setColorOverride(settingId, v)} presets={widget.presets as SpecialValue[]} widget={widget.widget} default={setting.default as HexColor} resetMessage={isThemedColor(settingId) ? `${setting.name} now follows the theme` : undefined} />
                             {:else if widget.type === "custom-number"}
                                 <CustomNumber bind:value={config[settingId] as string} presets={widget.presets as SpecialValue[]} min={widget.min} max={widget.max} step={widget.step} size={widget.size} placeholder={widget.placeholder} integer={widget.integer} widget={widget.widget} />
                             {:else if widget.type === "scroll-multiplier"}

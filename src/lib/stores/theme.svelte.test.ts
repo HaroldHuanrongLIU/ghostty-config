@@ -63,6 +63,14 @@ describe("effectiveColors", () => {
         config.theme = "Some Custom Theme That Does Not Exist";
         expect(effectiveColors().background).toBe(defaults.background);
     });
+
+    // Not every theme defines every scheme key; a missing key must fall to the app default.
+    const partialEntry = Object.entries(themes).find(([, s]) => s.background && s.selectionBackground === undefined);
+    it.skipIf(!partialEntry)("falls back to the app default for keys the theme doesn't provide", () => {
+        config.theme = partialEntry![0];
+        expect(effectiveColors().selectionBackground).toBe(defaults.selectionBackground);
+        expect(effectiveColors().background).toBe(partialEntry![1].background);
+    });
 });
 
 describe("no theme bleed in diff()", () => {
@@ -79,5 +87,13 @@ describe("no theme bleed in diff()", () => {
         config.theme = nameA;
         config.background = "#123456";
         expect(diff().background).toBe("#123456");
+    });
+
+    it("a per-index palette edit emits only that index, not the themed array", () => {
+        config.theme = nameA;
+        config.palette[3] = "#ff00ff";
+        const output = diff();
+        expect(output.palette).toEqual(["3=#ff00ff"]);
+        expect(Object.keys(output).sort()).toEqual(["palette", "theme"]);
     });
 });

@@ -11,10 +11,11 @@
         label?: string;
         defaultValue?: HexColor;
         disabled?: boolean;
+        resetMessage?: string; // right-click toast override, e.g. "now follows the theme" while a theme is active
     }
 
     // eslint-disable-next-line prefer-const
-    let {value = $bindable(), size = 20, label = "", defaultValue, disabled = false}: Props = $props();
+    let {value = $bindable(), size = 20, label = "", defaultValue, disabled = false, resetMessage}: Props = $props();
     const borderColor = $derived(`rgba(255, 255, 255, ${(value ? luminosity(value) : 0) * 0.0027451 + 0.3})`);
     const labelColor = $derived(value && isDark(value) ? `var(--font-color)` : "black");
     let popoutOpen = $state(false);
@@ -32,7 +33,7 @@
         event.stopPropagation();
         if (defaultValue !== undefined) {
             value = defaultValue;
-            success("Color reset to default");
+            success(resetMessage ?? "Color reset to default");
         }
     }
 
