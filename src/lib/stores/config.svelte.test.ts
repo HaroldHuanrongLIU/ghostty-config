@@ -9,7 +9,7 @@ import {serialize} from "$lib/utils/parse";
 
 afterEach(() => {
     // config is a module singleton; reset anything a test touched
-    for (const k of ["fontSize", "desktopNotifications", "fontFamily", "windowWidth", "background"] as const) {
+    for (const k of ["fontSize", "desktopNotifications", "fontFamily", "windowWidth", "background", "keybind", "palette"] as const) {
         resetSetting(k);
     }
 });
@@ -49,6 +49,34 @@ describe("diff()", () => {
         config.fontFamily = ["JetBrainsMono NF", "Symbols Nerd Font"];
         expect(diff()["font-family"]).toEqual(["JetBrainsMono NF", "Symbols Nerd Font"]);
     });
+
+    // The two genuinely-special array cases: keybind emits only additions over the defaults,
+    // palette emits `index=color` only for slots differing from their default. Both flow
+    // through diffFromDefaults now that diff() delegates — these lock that behavior in place.
+    it("emits only keybind additions over the default set", () => {
+        config.keybind = [...defaults.keybind, "ctrl+shift+x=copy_to_clipboard"];
+        expect(diff().keybind).toEqual(["ctrl+shift+x=copy_to_clipboard"]);
+    });
+
+    it("emits changed palette slots in index=color form", () => {
+        expect(diff().palette).toBeUndefined(); // untouched palette contributes nothing
+        config.palette[5] = "#ffffff";
+        config.palette[0] = "#000000";
+        expect(diff().palette).toEqual(["0=#000000", "5=#ffffff"]);
+    });
+});
+
+describe("diff() === diffFromDefaults(config)", () => {
+    // diff() is defined as diffFromDefaults(config); prove the delegation holds for every
+    // value shape (scalar, generic repeatable, keybind, palette) so the de-dup can't silently
+    // diverge from the live-store behavior it replaced.
+    it("matches for scalar, repeatable, keybind, and palette changes at once", () => {
+        config.fontSize = "18";
+        config.fontFamily = ["JetBrainsMono NF"];
+        config.keybind = [...defaults.keybind, "ctrl+shift+x=copy_to_clipboard"];
+        config.palette[5] = "#ffffff";
+        expect(diff()).toEqual(diffFromDefaults(config));
+    });
 });
 
 describe("load()", () => {
@@ -63,7 +91,7 @@ describe("round-trip diff -> serialize", () => {
     it("renders a flat diff as Ghostty config lines", () => {
         config.fontSize = "18";
         config.desktopNotifications = "false";
-        const text = serialize(diff() as Record<string, string | string[]>, false);
+        const text = serialize(diff(), false);
         expect(text).toContain("font-size = 18");
         expect(text).toContain("desktop-notifications = false");
     });
