@@ -13,8 +13,10 @@ import config, {defaults, isNonDefault} from "./config.svelte";
 export type PreviewMode = "light" | "dark";
 
 // Ephemeral view state: which half of a `light:A,dark:B` dual theme is being previewed.
-// Never stored in config, never serialized. Defaults to dark (the configurator's own look).
-export const preview = $state<{mode: PreviewMode}>({mode: "dark"});
+// Never stored in config, never serialized. Defaults to the visitor's own OS appearance
+// "what would Ghostty show *me*" falling back to dark during prerender/tests.
+const prefersLight = typeof window !== "undefined" && (window.matchMedia?.("(prefers-color-scheme: light)").matches ?? false);
+export const preview = $state<{mode: PreviewMode;}>({mode: prefersLight ? "light" : "dark"});
 
 const selection = $derived(parseTheme(config.theme));
 

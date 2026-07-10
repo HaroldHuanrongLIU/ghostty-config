@@ -21,17 +21,18 @@
     }
 </script>
 
-<LinkedInput bind:value labels={["Light", "Dark"]} parse={(raw: string) => dualThemeCodec.parse(raw)} serialize={serializeTheme}>
+<LinkedInput bind:value labels={["Light", "Dark"]} parse={(raw: string) => dualThemeCodec.parse(raw)} serialize={serializeTheme} collapseLinked>
     {#snippet control(theme: string, setTheme: (next: string) => void)}
         <Dropdown
             value={theme}
             {options}
             change={setTheme}
-            placeholder="Choose a theme"
+            placeholder="Theme…"
             searchable
             allowEmpty
             emptyLabel="Reset Theme"
             iconSize={32}
+            maxWidth={150}
         />
     {/snippet}
 </LinkedInput>
