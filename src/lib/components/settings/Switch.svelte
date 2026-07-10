@@ -6,14 +6,16 @@
         value?: string; // flat-store string ("true"/"false"); parsed/serialized via boolCodec
         onchange?: (checked: boolean) => void;
     }
+
     // eslint-disable-next-line prefer-const
     let {disabled = false, value = $bindable("false"), onchange}: Props = $props();
 
     const checked = $derived(boolCodec.parse(value));
 
     function change() {
-        value = boolCodec.serialize(!checked);
-        onchange?.(boolCodec.parse(value));
+        const nextChecked = !checked;
+        value = boolCodec.serialize(nextChecked);
+        onchange?.(nextChecked);
     }
 </script>
 

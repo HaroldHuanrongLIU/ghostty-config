@@ -69,7 +69,7 @@
         const theme = activeThemeName();
         if (!theme) return undefined;
         const follows = settingId === "palette" || (isSchemeColorKey(settingId) && colorTier(settingId) === "theme");
-        return follows ? `Inherited from "${theme}", edit to create an override` : undefined;
+        return follows ? `Inherited from "${theme}"\n\nEdit to create an override` : undefined;
     }
 
     // Per-swatch tier tooltips for the palette grid — the one setting whose tiers vary per
@@ -78,8 +78,8 @@
         const theme = activeThemeName();
         if (!theme) return undefined;
         const tier = paletteTier(index);
-        if (tier === "theme") return `Inherited from "${theme}", edit to create an override`;
-        if (tier === "override") return "Theme overriden, right-click to follow the theme";
+        if (tier === "theme") return `Inherited from "${theme}"\n\nEdit to create an override`;
+        if (tier === "override") return "Theme overriden\n\nRight-click to follow the theme";
         return undefined;
     }
 </script>
