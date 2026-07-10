@@ -876,6 +876,10 @@ export const registry = {
         platform: ["macos"],
         widget: {type: "color"}
     },
+    // This supports up to 64 comma-separated gradient colors, which wants a dedicated `repeatable-color`
+    // widget. Intentionally kept as a single `color` widget for now... it's niche (macOS icon gradient only),
+    // and the string value is still fully editable. TODO: to build later, add a `repeatable-color` WidgetDef member,
+    // add its type to the `RepeatableWidgetDef` Extract in types.ts, then make this `repeatable: true` + `default: []`.
     macosIconScreenColor: {
         default: "",
         description: "The color(s) of the screen in the macOS app icon. The screen is a linear gradient; specify up to 64 comma-separated colors. First color is the bottom of the gradient, last is the top. Required when `macos-icon = custom-style`.",
@@ -1046,7 +1050,7 @@ export const registry = {
     },
     paletteGenerate: {
         default: "true",
-        description: "Whether to automatically generate the extended 256 color palette (indices 16–255) from the base 16 ANSI colors. Colors explicitly set via `palette` are never overwritten.",
+        description: "Whether to automatically generate the extended 256 color palette (indices 16-255) from the base 16 ANSI colors. Colors explicitly set via `palette` are never overwritten.",
         key: "palette-generate",
         name: "Auto-generate missing palette colors",
         note: "When enabled, Ghostty will generate missing colors (indices 16-231) based on the first 16.",
@@ -1264,7 +1268,7 @@ export const registry = {
         description: "Characters that mark word boundaries during text selection (e.g. double-clicking). When selecting a word, the selection will stop at any of these characters.\n\nEach character becomes a word boundary. The null character (U+0000) is always treated as a boundary.",
         key: "selection-word-chars",
         name: "Word selection characters",
-        note: "Characters that are considered part of a word for double-click selection.",
+        note: "Each character is an individual boundary where selection stops. Not a pattern or regex.",
         since: "1.3.0"
     },
     shellIntegration: {
@@ -1430,6 +1434,7 @@ export const registry = {
         description: "If true, extra padding from viewport not divisible by cell size is automatically balanced between all four edges. The other `window-padding` options are applied first.",
         key: "window-padding-balance",
         name: "Auto-balance window padding",
+        note: "Distributes only the leftover space evenly across all four edges. Applied after horizontal/vertical padding, not instead of it.",
         widget: {type: "switch"}
     },
     windowPaddingColor: {
